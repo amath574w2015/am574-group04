@@ -42,15 +42,12 @@ SOURCES = \
   $(CLAW)/classic/src/1d/b4step1.f90 \
   $(CLAW)/classic/src/1d/driver.f90 \
   $(CLAW)/classic/src/1d/claw1ez.f \
-# $(CLAW)/classic/src/1d/claw1.f \
   claw1.f \
   $(CLAW)/classic/src/1d/copyq1.f \
   $(CLAW)/classic/src/1d/inlinelimiter.f90 \
   $(CLAW)/classic/src/1d/opendatafile.f \
   $(CLAW)/classic/src/1d/out1.f \
-#  $(CLAW)/classic/src/1d/src1.f90 \
   src1.f90 \
-#  $(CLAW)/classic/src/1d/step1.f90
   step1.f90\
 
 #-------------------------------------------------------------------
