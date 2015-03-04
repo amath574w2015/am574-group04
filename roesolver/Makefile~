@@ -36,7 +36,7 @@ MODULES = \
 SOURCES = \
   qinit.f \
   setprob.f \
-  rp1_sqrtflux.f90 \
+  rp1_euler_with_efix.f90 \
   $(CLAW)/classic/src/1d/setaux.f90 \
   $(CLAW)/classic/src/1d/bc1.f \
   $(CLAW)/classic/src/1d/b4step1.f90 \
