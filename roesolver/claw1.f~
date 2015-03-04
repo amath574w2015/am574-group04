@@ -494,7 +494,7 @@ c        # take a step on the homogeneous conservation law:
          call step1(meqn,mwaves,mbc,maux,mx,q,aux,dx,dt,
      &             method,mthlim,cfl,work(i0f),work(i0wave),
      &             work(i0s),work(i0amdq),work(i0apdq),work(i0dtdx),
-     &             use_fwave,rp1,xlower)
+     &             use_fwave,rp1)
 c
          if (method(5).eq.2) then
 c            # source terms over a second half time step for Strang splitting:
