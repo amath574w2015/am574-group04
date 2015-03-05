@@ -1,0 +1,201 @@
+\documentclass{article}% insert '[draft]' option to show overfull boxes
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{subfigure}
+\usepackage{float} 
+\usepackage{hyperref}  % for urls and hyperlinks
+
+
+\newcommand{\BigO}[1]{\ensuremath{\operatorname{O}\bigl(#1\bigr)}}
+\usepackage[left = 1in, right = 1in, top=1in, bottom=1in]{geometry}
+{\setlength{\parindent}{0cm}
+\numberwithin{equation}{section}
+
+\title{Unsteady, Pseudo-1D Nozzle Simulations using Riemann Solvers}
+\author{Alex Le $\&$ Christopher Uyeda}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+The pseudo-1D Euler equations will be explored for the case of an unsteady nozzle problem with fixed geometry. The simulations of the nozzle will be run until the steady state is reached for various pressure ratios that will result in purely subsonic flow, choked subsonic flow, and purely supersonic flow. In each case, the steady state results will be compared to the theoretical quasi-1D nozzle equations for the accuracy of the different flux methods used. Because the pseudo-1D Euler equations inherently contains a source term, fractional splitting methods will be used to account for the source term. This will require the implementation of a Runge-Kutta method in order to solve the ODE when the solution is reacted according to the source term.
+
+\section{Pseudo-1D Euler Equations}
+The governing pseudo-1D Euler equation for the simulations is defined by
+
+\begin{equation}
+\frac{d}{dt} \left[ \begin{array}{c} \rho A \\ \rho u A \\ e A \end{array} \right] + \frac{d}{dx} \left[ \begin{array}{c} \rho u A \\ (\rho u^2 + p) A \\ u(e + p)A \end{array} \right] = \left[ \begin{array}{c} 0 \\ p \frac{dA}{dx} \\ 0 \end{array} \right] \label{psuedoeuler}
+\end{equation}
+
+where the area can be pulled out by
+
+\begin{equation*}
+\begin{split}
+A q_t + f(A q)_x = S \\
+A q_t + \frac{dA}{dx} f(q) + A f(q)_x = S \\
+q_t + f(q)_x = S - \frac{dA}{dx} f(q) \\
+\end{split}
+\end{equation*}
+
+such that the reformulated equation is 
+
+\begin{equation}
+\frac{d}{dt} \left[ \begin{array}{c} \rho  \\ \rho u  \\ e \end{array} \right] + \frac{d}{dx} \left[ \begin{array}{c} \rho u  \\ \rho u^2 + p \\ u(e + p) \end{array} \right] = \left[ \begin{array}{c} -\frac{1}{A}\frac{dA}{dx} \rho u \\ -\frac{1}{A} \frac{dA}{dx} \rho u^2  \\ -\frac{1}{A} \frac{dA}{dx}  (e + p) \end{array} \right]
+\end{equation}
+
+where S is the original source term vector and the new conserved variables are $q = [\rho, \rho u, e]^T$, similar to the 1D Euler equations. The flux Jacobian of the system is given by
+
+\begin{equation}
+f'(q) = \left[ \begin{array}{ccc} 0 & 1 & 0 \\ p_{\rho} - u^2 &  u(2 - p_e) &  p_e \\  u(p_\rho - H) & H - u^2 p_e  &  u(1 + p_e) \end{array} \right] \label{1deulerjacobian}
+\end{equation}
+
+where $H = \frac{e + p}{\rho}$, $p_\rho = \frac{\gamma - 1}{2} u^2 $, and $p_e = \gamma - 1$. The eigenvalues may be solved by taking the determinant and setting it equal to zero
+
+\begin{equation}
+det \left[ \begin{array}{ccc} -\lambda & 1 & 0 \\ p_{\rho} - u^2 &  u(2 - p_e) - \lambda &  p_e \\  u(p_\rho - H) & H - u^2 p_e  &  u(1 + p_e) - \lambda \end{array} \right] = 0
+\end{equation}
+
+where the eigenvalues are then given by 
+
+\begin{equation}
+\lambda^1 = u - c,  \ \ \lambda^2 =u , \ \ \lambda^3 = u + c \label{eigval}
+\end{equation}
+
+Solving for the eigenvectors, r, results in
+
+\begin{equation}
+\begin{split}
+(f'(q) - \lambda I) r = 0 \\
+R = \left[ \begin{array}{c |c | c} r^1 & r^2 & r^3 \end{array} \right]= \left[ \begin{array}{ccc} 1 & 1 & 1 \\ u- c & u  & u + c \\ H - u c &  H - \frac{c^2}{\gamma - 1} & H + u c   \end{array} \right] 
+\end{split}
+\end{equation}
+
+\section{Riemann Problem - Euler Equations}
+To solve the Euler equation Riemann problem, the waves are split into the left going and right going waves according to the eigenvalues. This means that if the flow is subsonic then $\lambda^1$ is a left going wave and $\lambda^2$ and $\lambda^3$ are right going waves, while if the flow is supersonic then all waves are right going waves. The coefficients of these eigenvectors, $\alpha$, may be determined by the following which involves taking the inverse of the eigenvector matrix, R.
+
+\begin{equation}
+q_r - q_l = R \alpha \rightarrow R^{-1} (q_r - q_l) = \alpha \label{alphaeqn}
+\end{equation}
+
+where 
+
+\begin{equation}
+\begin{split}
+R^{-1} = \left[ \begin{array}{ccc} \frac{c^2 + H (\gamma-1) + c u + (\gamma-1) u^2}{2 c^2} & -\frac{c + (\gamma - 1) u}{2 c^2} & \frac{\gamma - 1}{2 c^2} \\ \frac{ (\gamma - 1) (H - u^2)}{c^2} & \frac{(\gamma - 1) u}{c^2} & - \frac{\gamma - 1}{c^2} \\   \frac{c^2 - H (\gamma - 1) - c u + (\gamma - 1) u^2}{2 c^2} & \frac{c - (\gamma - 1) u}{2 c^2} & \frac{\gamma - 1}{2 c^2} \end{array} \right] \\ 
+%= \left[ \begin{array}{ccc} \frac{e (1 - \gamma) + p (1 - \gamma) + \rho(c^2 + c u + (\gamma - 1) u^2)}{2 c^2 \rho} & -\frac{u(\gamma - 1) + c}{2 c^2} & \frac{\gamma - 1}{2 c^2}   \\ \frac{(\gamma - 1)(e + p - \rho u^2)}{c^2 \rho} & \frac{u (\gamma - 1)}{c^2} & -\frac{\gamma - 1}{c^2} \\ \frac{e (1 - \gamma) + p (1 - \gamma) + \rho(c^2 - c u + (\gamma - 1)u^2)}{2 c^2 \rho} & \frac{c - u(\gamma - 1)}{2 c^2} & \frac{\gamma - 1}{2 c^2}  \end{array} \right]
+\end{split}
+\end{equation}
+
+
+The coefficients may then be solved to be
+
+\begin{equation}
+\begin{split}
+\alpha = R^{-1}(qr - ql)  = R^{-1} \delta \\
+%=  \left[ \begin{array}{c} \frac{e (1 - \gamma) + p (1 - \gamma) + \rho(c^2 + c u + (\gamma - 1) u^2)}{2 c^2 \rho} \delta^1  - \frac{u(\gamma - 1) + c}{2 c^2} \delta^2 +\frac{\gamma - 1}{2 c^2} \delta^3 \\ \frac{(\gamma - 1)(e + p - \rho u^2)}{c^2 \rho} \delta^1 + \frac{u (\gamma - 1)}{c^2} \delta^2  -\frac{\gamma - 1}{c^2} \delta^3 \\ \frac{e (1 - \gamma) + p (1 - \gamma) + \rho(c^2 - c u + (\gamma - 1)u^2)}{2 c^2 \rho} \delta^1 + \frac{c - u(\gamma - 1)}{2 c^2} \delta^2 +  \frac{\gamma - 1}{2 c^2} \delta^3 \end{array} \right] \\
+= \left[ \begin{array}{c} \frac{c^2 + H (\gamma-1) + c u + (\gamma-1) u^2}{2 c^2} \delta^1 -\frac{c + (\gamma - 1) u}{2 c^2} \delta^2 +   \frac{\gamma - 1}{2 c^2} \delta^3 \\ \frac{ (\gamma - 1) (H - u^2)}{c^2} \delta^1 +  \frac{(\gamma - 1) u}{c^2} \delta^2 -  \frac{\gamma - 1}{ c^2}  \delta^3 \\ \frac{c^2 - H (\gamma - 1) - c u + (\gamma - 1) u^2}{2 c^2} \delta^1 + \frac{c - (\gamma - 1) u}{2 c^2} \delta^2 +   \frac{\gamma - 1}{2 c^2} \delta^3 \end{array} \right] \\
+= \left[ \begin{array}{c} (\gamma - 1) \frac{(H + u^2) \delta^1 - u \delta^2 + \delta^3}{2 c^2} + \frac{(c^2 + c u) \delta^1 - c \delta^2}{2 c^2} \\ (\gamma - 1) \frac{(H - u^2)\delta^1 + u \delta^2 - \delta^3}{ c^2} \\ (\gamma - 1) \frac{(u^2 - H) \delta^1 - u \delta^2 + \delta^3}{2 c^2} + \frac{(c^2 - c u) \delta^1 + c \delta^2}{2 c^2} \end{array} \right]
+\end{split} \label{coeffcients}
+\end{equation}
+
+where $\delta^i$ refers to the ith element of the $\delta$ vector. Because solving the exact Riemann solution is very expensive, the roe approximation is used instead which estimates velocity, $\hat{u}$, total specific enthalpy, $\hat{H}$, and sound speed, $\hat{c}$, by
+
+\begin{equation}
+\begin{split}
+\hat{u}= \frac{\sqrt{\rho_{i - 1}} u_{i-1} + \sqrt{\rho_i} u_i}{\sqrt{\rho_{i-1}} + \sqrt{\rho_i}}  \\
+\hat{H} = \frac{\sqrt{\rho_{i - 1}} H_{i-1} + \sqrt{\rho_i} H_i}{\sqrt{\rho_{i-1}} + \sqrt{\rho_i}} = \frac{(E_{i-1} + p_{i-1})/\sqrt{\rho_{i - 1}}+ (E_i + p_i) / \sqrt{\rho_i} }{\sqrt{\rho_{i-1}} + \sqrt{\rho_i}} \\
+\hat{c} = \sqrt{(\gamma - 1) \left( \hat{H} - \frac{1}{2} \hat{u}^2 \right)}
+\end{split}
+\end{equation}
+
+(pg 323).
+
+These values are then plugged into Eqn. \ref{eigval} and \ref{coeffcients} to solve the Riemann problem with the approximated values.
+
+\section{Boundary Conditions}
+In order to initiate flow through the nozzle, boundary conditions must be used at the inlet and outlet. The proper implementation of these conditions are crucial to avoid artificial reflections at the inlet or outlet. Both boundary conditions are purely driven by defined pressures.
+
+\subsection{Subsonic Inlet}
+In the case of a subsonic inlet, the 1-wave is traveling out of the domain while the 2-wave and 3-wave are moving into the domain. This means that two primitive variables must be defined from the boundary, $u_0$ and $p_0$ in the first ghost cell. Because pressure will be defined at the inlet from the reservoir, the corresponding $u_0$ can be determined by the Hugoniot-Loci for the 3-wave that links $q_r$ to $q_0$, where $q_0$ are the conserved variables in the first ghost cell. The Rankine-Hugoniot conditions are applied in this case to derive an equation for $u_0$ in terms of $p_0$ and $\gamma$, Leveque(2011),
+
+\begin{equation}
+u_0 = u_1 + \frac{2}{\sqrt{2 \gamma (\gamma - 1)}} \sqrt{\frac{\gamma p_1}{\rho_1}} \left( \frac{1 - p_0 / p_1}{\sqrt{1 + \beta p_0 / p_1}} \right)
+\end{equation}
+
+where $\beta = (\gamma + 1) / (\gamma  - 1)$ and the subscript 1 refers to the first interior cell. The energy is defined by 
+
+\begin{equation}
+e = \frac{p}{\gamma - 1} + \frac{1}{2} \rho u^2
+\end{equation}
+
+so the resulting conserved variables at the first ghost cell is 
+
+\begin{equation}
+q_0 =  \left[ \begin{array}{c} q_1(1) \\ q_1(1) u_0 \\ \frac{p_0}{\gamma - 1} + \frac{1}{2} q_1(1) u_0^2 \end{array} \right]
+\end{equation}
+
+where $q_j(i)$ refers to the ith component of q at the jth cell.
+
+\subsection{Subsonic Outlet}
+The subsonic outlet is similar to the subsonic inlet, but now the 1 wave is traveling into the domain while the 2-wave and 3-wave are moving out of the domain. In this case, only one primitive variable must be defined from the boundary, $p_n$. Thus the resulting conserved variables defined at the first ghost cell at the outlet, $q_n$, is
+
+\begin{equation}
+q_n =  \left[ \begin{array}{c} q_{n-1}(1) \\ q_{n-1}(2) \\ \frac{p_n}{\gamma - 1} + \frac{1}{2}\frac{q_{n-1}(2)^2}{q_{n-1}(1)} \end{array} \right]
+\end{equation}
+
+\subsection{Supersonic Outlet}
+For the supersonic outlet, all the waves are now traveling out of the domain. This means the conserved variables at the first ghost cell at the outlet, $q_n$, is easily defined by an extrapolation 
+
+\begin{equation}
+q_n  =  q_{n-1}
+\end{equation}
+
+\section{Numerical Method}
+
+\subsection{Fractional Splitting}
+Because the psuedo-1D Euler equation given by Eqn. \ref{psuedoeuler} contains a source term, $p \frac{dA}{dx}$, the typical Riemann solving method can't be applied. In order to account for this source term, a fractional splitting method is incorporated. Two different types of fractional splitting will be tested: Gudonov's splitting, 1st order accurate, and Strang splitting, 2nd order accurate. 
+\\
+\\
+Starting with Gudonov splitting, at each timestep, the solution will be advected and then reacted. This two step method takes the form of
+
+\begin{equation}
+\begin{split}
+\text{Step 1:} \ \ q_t + \bar{u} q_x = 0 \\
+\text{Step 2:} \ \ q_t = -\beta(q)
+\end{split}
+\end{equation}  
+
+The first step will be solved first using various different limiter methods, upwind, Lax-Wendroff, superbee, and MC, to test the solutions sensitivity to these different methods. The second step will be solved by using a two stage Runge-Kutta method to solve the ODE. The two steps when specified to the psuedo-1D Euler equations is given by
+
+\begin{equation}
+\begin{split}
+\text{Step 1:} \ \ \left[ \begin{array}{c} \rho  \\ \rho u  \\ e \end{array} \right]_t +  \left[ \begin{array}{c} \rho u  \\ \rho u^2 + p \\ u(e + p) \end{array} \right]_x =  0 \\
+\text{Step 2:} \ \ \left[ \begin{array}{c} \rho  \\ \rho u  \\ e  \end{array} \right]_t = \left[ \begin{array}{c} -\frac{1}{A}\frac{dA}{dx} \rho u \\ -\frac{1}{A} \frac{dA}{dx} \rho u^2  \\ -\frac{1}{A} \frac{dA}{dx}  (e + p)  \end{array} \right]    \end{split}
+\label{eq:splitting}
+\end{equation}
+
+\subsection{Riemann Solver Methods}
+The first step in the split method is implemented as a modification to an existing Riemann solver within Clawpack, called 'rp1\_euler\_with\_efix.f90'. This is a 1D Euler solver has the Roe-averaged quantities and wave solutions already programmed into it. This solver can be used with limiter methods specified by the 'setrun.py' file. 
+\subsection{Source Terms}
+The second step implements an optional source function that uses a Runge-Kutta method to solve a set of three ODEs. The Runge-Kutta solver takes the form:
+\begin{equation}
+\begin{split}
+Q^{**}_i=Q^*_i+\frac{\Delta t}{2} \psi (Q^*_i) \\
+Q^{n+1}_i=Q^*_i+ \Delta t \psi(Q^{**}_i)
+\end{split}
+\end{equation}
+Here, $ Q^* $ is the conserved quantity vector after advection, and $ \psi(Q^*) $ are the source terms from Eq. \ref{eq:splitting} evaluated using the quantities from the vector $ Q^* $. This solver uses a forward Euler algorithm by approximating the conserved quantity vector at an intermediate state using a half-time step, and then using this midpoint state $ Q^{**} $ in order to update the solution to the next time level using a full time step, with $ \psi(Q^{**}) $ referring to the source terms evaluated using $ Q^{**} $.
+
+\section{Numerical Results}
+
+\subsection{Convergence}
+
+\subsection{Subsonic}
+
+\subsection{Choked Subsonic}
+
+\subsection{Supersonic}
+
+\end{document}
