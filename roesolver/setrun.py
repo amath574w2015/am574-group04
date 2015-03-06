@@ -37,7 +37,7 @@ def setrun(claw_pkg='classic'):
     #------------------------------------------------------------------
     
     probdata = rundata.new_UserData(name='probdata',fname='setprob.data')
-    probdata.add_param('beta',  200., 'for width of Gaussian data')
+#    probdata.add_param('beta',  200., 'for width of Gaussian data')
     
     #------------------------------------------------------------------
     # Standard Clawpack parameters to be written to claw.data:
@@ -54,11 +54,11 @@ def setrun(claw_pkg='classic'):
     clawdata.num_dim = num_dim
     
     # Lower and upper edge of computational domain:
-    clawdata.lower[0] = -1.000000e+00          # xlower
+    clawdata.lower[0] = 0.000000e+00          # xlower
     clawdata.upper[0] = 10.000000e+00          # xupper
     
     # Number of grid cells:
-    clawdata.num_cells[0] = 100      # mx
+    clawdata.num_cells[0] = 500      # mx
     
 
     # ---------------
@@ -172,7 +172,7 @@ def setrun(claw_pkg='classic'):
     
     
     # Number of waves in the Riemann solution:
-    clawdata.num_waves = 1
+    clawdata.num_waves = 3
     
     # List of limiters to use for each wave family:  
     # Required:  len(limiter) == num_waves
@@ -206,8 +206,8 @@ def setrun(claw_pkg='classic'):
     #   2 or 'periodic' => periodic (must specify this at both boundaries)
     #   3 or 'wall'     => solid wall for systems where q(2) is normal velocity
     
-    clawdata.bc_lower[0] = 1   # at xlower
-    clawdata.bc_upper[0] = 1   # at xupper
+    clawdata.bc_lower[0] = 0   # at xlower
+    clawdata.bc_upper[0] = 0   # at xupper
                   
     return rundata
 

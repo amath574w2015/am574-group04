@@ -22,14 +22,14 @@ def setplot(plotdata):
     plotdata.clearfigures()  # clear any old figures,axes,items data
 
     # Figure for q[0]
-    plotfigure = plotdata.new_plotfigure(name='Pressure and Velocity', figno=1)
+    plotfigure = plotdata.new_plotfigure(name='Density, Momentum, and Energy', figno=1)
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.axescmd = 'subplot(2,1,1)'   # top figure
+    plotaxes.axescmd = 'subplot(3,1,1)'   # top figure
     plotaxes.xlimits = 'auto'
-    plotaxes.ylimits = [-.5,1.1]
-    plotaxes.title = 'Pressure'
+    plotaxes.ylimits = [0.0,2.0]
+    plotaxes.title = 'Density'
 
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
@@ -42,16 +42,33 @@ def setplot(plotdata):
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.axescmd = 'subplot(2,1,2)'   # bottom figure
+    plotaxes.axescmd = 'subplot(3,1,2)'   # bottom figure
     plotaxes.xlimits = 'auto'
-    plotaxes.ylimits = [-.5,1.1]
-    plotaxes.title = 'Velocity'
+    plotaxes.ylimits = [-0.5,5.0]
+    plotaxes.title = 'Momentum'
 
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
     plotitem.plot_var = 1
     plotitem.plotstyle = '-o'
     plotitem.color = 'b'
+
+    # Figure for q[2]
+
+    # Set up for axes in this figure:
+    plotaxes = plotfigure.new_plotaxes()
+    plotaxes.axescmd = 'subplot(3,1,3)'   # bottom figure
+    plotaxes.xlimits = 'auto'
+    plotaxes.ylimits = [0.0,5.0]
+    plotaxes.title = 'Energy'
+
+    # Set up for item on these axes:
+    plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
+    plotitem.plot_var = 1
+    plotitem.plotstyle = '-o'
+    plotitem.color = 'b'
+
+
 
     # Parameters used only when creating html and/or latex hardcopy
     # e.g., via clawpack.visclaw.frametools.printframes:
@@ -63,7 +80,7 @@ def setplot(plotdata):
     plotdata.html = True                     # create html files of plots?
     plotdata.html_homelink = '../README.html'
     plotdata.latex = True                    # create latex file of plots?
-    plotdata.latex_figsperline = 2           # layout of plots
+    plotdata.latex_figsperline = 3           # layout of plots
     plotdata.latex_framesperline = 1         # layout of plots
     plotdata.latex_makepdf = False           # also run pdflatex?
 

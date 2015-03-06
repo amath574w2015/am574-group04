@@ -12,12 +12,12 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
     real(kind=8), intent(inout) ::  q(meqn,1-mbc:mx+mbc)
     ! added pressure storage
     real(kind=8)   press(1-mbc:mx+mbc)
-    real(kind=8)   psistar(1-mbc:mx+mbc)
-    real(kind=8)   psistarstar(1-mbc:mx+mbc)
-    real(kind=8)   Qstarstar(1-mbc:mx+mbc)
+    real(kind=8)   psistar(3,1-mbc:mx+mbc)
+    real(kind=8)   psistarstar(3,1-mbc:mx+mbc)
+    real(kind=8)   Qstarstar(3,1-mbc:mx+mbc)
     real(kind=8)   darea(1-mbc:mx+mbc)
     real(kind=8)   area(1-mbc:mx+mbc)
-    common /cparam/  gambn ma
+    common /cparam/  gamma
 
 !   Define area
     do 150 i=1,mx
