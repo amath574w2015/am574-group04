@@ -41,6 +41,8 @@ subroutine rp1(maxmx,meqn,mwaves,maux,mbc,mx,ql,qr,auxl,auxr,wave,s,amdq,apdq,dx
     dimension u(1-mbc:maxmx+mbc),enth(1-mbc:maxmx+mbc)
     dimension a(1-mbc:maxmx+mbc)
     logical :: efix
+    real(kind=8)::gamma
+ 
     common /cparam/  gamma
 
     data efix /.true./    !# use entropy fix for transonic rarefactions

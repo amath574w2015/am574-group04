@@ -25,16 +25,16 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
     do 150 i=1,mx
         xcell = xlower + (i-0.5d0)*dx
 !	radius1(i) = 0.5d0 - 0.15d0 * tanh(0.65d0 * xcell - 5d0)
-!	radius2(i) = 0.5d0 - 0.15d0 * tanh(0.65d0 * (xcell - 15d0) - 5d0)
+!	radius2(i) = 0.5d0 + 0.15d0 * tanh(0.65d0 * (xcell - 15d0) - 5d0)
         if (xcell .le. 15.0d0) then
-		area(i)=pi*(0.5d0 + 0.15d0 * tanh(5d0 - 0.65 * xcell))**2 
-		darea(i)=-0.612611d0 * 1/cosh(5d0-0.65d0*xcell)**2 &
-		* (0.5d0 + 0.15d0 * tanh(5d0-0.65d0*xcell))
-	else
-		area(i)=pi*(0.5d0 + 0.15d0 * tanh(5d0 - 0.65 * (xcell-15d0)))**2 
-		darea(i)=-0.612611d0 * 1/cosh(5d0-0.65d0*(xcell-15d0))**2 &
-		* (0.5d0 + 0.15d0 * tanh(5d0-0.65d0*(xcell-15d0)))
-             endif
+               area(i)=pi*(0.5d0 - 0.15d0 * tanh(0.65 * xcell- 5.d0))**2 
+               darea(i)=-0.612611d0 * 1/cosh(5.d0-0.65d0*xcell)**2 &
+      &             * (0.5d0 + 0.15d0 * tanh(5.d0-0.65d0*xcell))
+        else
+               area(i)=pi*(0.5d0 + 0.15d0 * tanh(0.65 * (xcell-15d0)-5.d0))**2 
+               darea(i)=0.612611d0 * 1/cosh(5.d0-0.65d0*(xcell-15d0))**2 &
+                    * (0.5d0 - 0.15d0 * tanh(5.d0-0.65d0*(xcell-15d0)))
+        endif
 
     150    continue
 

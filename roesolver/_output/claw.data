@@ -31,7 +31,7 @@ T                    =: output_t0
 
 T                    =: dt_variable         
 2                    =: order               
-1                    =: verbosity           
+0                    =: verbosity           
 1                    =: source_split        
 0                    =: capa_index          
 F                    =: use_fwaves          

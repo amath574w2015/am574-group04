@@ -27,10 +27,11 @@ c
 
       dimension mthbc(2)
 c     Local Variables
-      real(kind=8) p,ubc
+      real(kind=8) p,ubc,po,patm
       real(kind=8) gamma_m,gamma_a,beta
+      
 
-      common /cparam/ gamma, p0, patm 
+      common /cparam/ gamma, po, patm 
 
 c
 c
@@ -49,12 +50,12 @@ c      po = 5.d0
       gamma_a = gamma + 1.d0
       beta = gamma_a/gamma_m
       do ibc=1,mbc
-          p=gamma_m*(q(3,2-ibc)-0.5d0*q(2,2-ibc)**2.d0/q(1,2-ibc))
-          ubc=q(2,2-ibc)/q(1,2-ibc)-2.d0/sqrt(2.d0*gamma*gamma_m)*sqrt(gamma*p
+          p=gamma_m*(q(3,1)-0.5d0*q(2,1)**2.d0/q(1,1))
+          ubc=q(2,1)/q(1,1)-2.d0/sqrt(2.d0*gamma*gamma_m)*sqrt(gamma*p
      &         /q(1,1))*(1.d0 - po/p)/sqrt(1.d0+beta*po/p)
-          q(1,1-ibc) = q(1,2-ibc)
-          q(2,1-ibc) = q(1,2-ibc)*ubc
-          q(3,1-ibc) = po/gamma_m+0.5d0*ubc**2.d0*q(1,2-ibc) 
+          q(1,1-ibc) = q(1,1)
+          q(2,1-ibc) = q(1,1)*ubc
+          q(3,1-ibc) = po/gamma_m+0.5d0*ubc**2.d0*q(1,1) 
       enddo
       go to 199
 c
@@ -101,19 +102,19 @@ c      patm=0.5d0
       gamma_m = gamma-1.d0
       gamma_a = gamma + 1.d0
       do ibc=1,mbc
-        p=gamma_m*(q(3,mx-1+ibc)-0.5d0*q(2,mx-1+ibc)
-     &        **2.d0/q(1,mx-1+ibc))
+        p=gamma_m*(q(3,mx)-0.5d0*q(2,mx)
+     &        **2.d0/q(1,mx))
 c       subsonic outflow
-        if(q(2,mx-1+ibc)/q(1,mx-1+ibc).lt.sqrt(gamma*p
-     &        /q(1,mx-1+ibc)))then
-           q(1,mx+ibc)=q(1,mx-1+ibc)
-           q(2,mx+ibc)=q(2,mx-1+ibc)
-           q(3,mx+ibc)=patm/gamma_m+0.5d0*q(2,mx-1+ibc)**
-     &       2.d0/q(1,mx-1+ibc)
+        if(q(2,mx)/q(1,mx).lt.sqrt(gamma*p
+     &        /q(1,mx)))then
+           q(1,mx+ibc)=q(1,mx)
+           q(2,mx+ibc)=q(2,mx)
+           q(3,mx+ibc)=patm/gamma_m+0.5d0*q(2,mx)**
+     &       2.d0/q(1,mx)
 c       supersonic outflow
         else
            do m=1,meqn
-              q(m,mx+ibc)=q(m,mx+ibc-1)
+              q(m,mx+ibc)=q(m,mx)
            enddo
         endif
       enddo

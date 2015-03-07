@@ -34,8 +34,8 @@ FFLAGS ?=  -ffpe-trap=invalid,overflow,zero
 MODULES = \
 
 SOURCES = \
-  qinit.f \
   setprob.f \
+  qinit.f \
   rp1_euler_with_efix.f90 \
   $(CLAW)/classic/src/1d/setaux.f90 \
   bc1.f \

@@ -59,12 +59,12 @@ def setplot(plotdata):
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.axescmd = 'subplot(3,1,3)'   # bottom figure
     plotaxes.xlimits = 'auto'
-    plotaxes.ylimits = [0.0,5.0]
+    plotaxes.ylimits = [8.0,20.0]
     plotaxes.title = 'Energy'
 
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
-    plotitem.plot_var = 1
+    plotitem.plot_var = 2
     plotitem.plotstyle = '-o'
     plotitem.color = 'b'
 

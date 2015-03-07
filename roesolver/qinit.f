@@ -13,12 +13,14 @@ c
       real(kind=8) :: gamma, patm
       common /cparam/ gamma, patm
 c
+
       do 150 i=1,mx
              q(1,i) = 0.5d0 !# density
              q(2,i) = 0.0d0 !# momentum
              q(3,i) = patm/(gamma-1.d0) + 0.5d0*q(2,i)**2.d0/q(1,i) !# energy
   150    continue
 c
+
       return
       end
 
