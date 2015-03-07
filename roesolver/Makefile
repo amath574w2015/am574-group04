@@ -46,7 +46,7 @@ SOURCES = \
   $(CLAW)/classic/src/1d/copyq1.f \
   $(CLAW)/classic/src/1d/inlinelimiter.f90 \
   $(CLAW)/classic/src/1d/opendatafile.f \
-  $(CLAW)/classic/src/1d/out1.f \
+  out1.f \
   src1.f90 \
   step1.f90\
 
