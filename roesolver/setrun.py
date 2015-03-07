@@ -55,7 +55,7 @@ def setrun(claw_pkg='classic'):
     
     # Lower and upper edge of computational domain:
     clawdata.lower[0] = 0.000000e+00          # xlower
-    clawdata.upper[0] = 10.000000e+00          # xupper
+    clawdata.upper[0] = 30.000000e+00          # xupper
     
     # Number of grid cells:
     clawdata.num_cells[0] = 500      # mx
@@ -105,8 +105,8 @@ def setrun(claw_pkg='classic'):
     if clawdata.output_style==1:
         # Output ntimes frames at equally spaced times up to tfinal:
         # Can specify num_output_times = 0 for no output
-        clawdata.num_output_times = 30
-        clawdata.tfinal = 20.000000
+        clawdata.num_output_times = 70
+        clawdata.tfinal = 50.000000
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
     elif clawdata.output_style == 2:
@@ -182,7 +182,7 @@ def setrun(claw_pkg='classic'):
     #   2 or 'superbee' ==> superbee
     #   3 or 'vanleer'  ==> van Leer
     #   4 or 'mc'       ==> MC limiter
-    clawdata.limiter = ['mc']
+    clawdata.limiter = [4,4,4]
     
     clawdata.use_fwaves = False    # True ==> use f-wave version of algorithms
     
@@ -190,7 +190,7 @@ def setrun(claw_pkg='classic'):
     #   src_split == 0 or 'none'    ==> no source term (src routine never called)
     #   src_split == 1 or 'godunov' ==> Godunov (1st order) splitting used, 
     #   src_split == 2 or 'strang'  ==> Strang (2nd order) splitting used,  not recommended.
-    clawdata.source_split = 0
+    clawdata.source_split = 1
     
     
     # --------------------

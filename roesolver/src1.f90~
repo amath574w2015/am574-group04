@@ -12,18 +12,30 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
     real(kind=8), intent(inout) ::  q(meqn,1-mbc:mx+mbc)
     ! added pressure storage
     real(kind=8)   press(1-mbc:mx+mbc)
-    real(kind=8)   psistar(1-mbc:mx+mbc)
-    real(kind=8)   psistarstar(1-mbc:mx+mbc)
-    real(kind=8)   Qstarstar(1-mbc:mx+mbc)
+    real(kind=8)   psistar(3,1-mbc:mx+mbc)
+    real(kind=8)   psistarstar(3,1-mbc:mx+mbc)
+    real(kind=8)   Qstarstar(3,1-mbc:mx+mbc)
     real(kind=8)   darea(1-mbc:mx+mbc)
     real(kind=8)   area(1-mbc:mx+mbc)
-    common /cparam/  gambn ma
+    real(kind=8)   pi
+    common /cparam/  gamma
+    pi=4d0*atan(1d0)
 
 !   Define area
     do 150 i=1,mx
-       xcell = xlower + (i-0.5d0)*dx
-       area(i) = 1.398 + 0.347 * tanh(0.8*xcell - 0.4)
-       darea(i) = 0.2776d0*(1.0d0 - tanh(0.8d0*xcell - 4.0d0)**2.0d0)
+        xcell = xlower + (i-0.5d0)*dx
+!	radius1(i) = 0.5d0 - 0.15d0 * tanh(0.65d0 * xcell - 5d0)
+!	radius2(i) = 0.5d0 - 0.15d0 * tanh(0.65d0 * (xcell - 15d0) - 5d0)
+        if (xcell .le. 15.0d0) then
+		area(i)=pi*(0.5d0 + 0.15d0 * tanh(5d0 - 0.65 * xcell))**2 
+		darea(i)=-0.612611d0 * 1/cosh(5d0-0.65d0*xcell)**2 &
+		* (0.5d0 + 0.15d0 tanh(5d0-0.65d0*xcell))
+	else
+		area(i)=pi*(0.5d0 + 0.15d0 * tanh(5d0 - 0.65 * (xcell-15d0)))**2 
+		darea(i)=-0.612611d0 * 1/cosh(5d0-0.65d0*(xcell-15d0))**2 &
+		* (0.5d0 + 0.15d0 tanh(5d0-0.65d0*(xcell-15d0)))
+             endif
+
     150    continue
 
 !   Calculate P from q. P=gamma1*(e + 0.5 rho*u^2)
