@@ -58,7 +58,7 @@ def setrun(claw_pkg='classic'):
     clawdata.upper[0] = 30.000000e+00          # xupper
     
     # Number of grid cells:
-    clawdata.num_cells[0] = 500      # mx
+    clawdata.num_cells[0] = 1000      # mx
     
 
     # ---------------
@@ -105,8 +105,8 @@ def setrun(claw_pkg='classic'):
     if clawdata.output_style==1:
         # Output ntimes frames at equally spaced times up to tfinal:
         # Can specify num_output_times = 0 for no output
-        clawdata.num_output_times = 70
-        clawdata.tfinal = 50.000000
+        clawdata.num_output_times = 130
+        clawdata.tfinal = 130.000000
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
     elif clawdata.output_style == 2:
@@ -135,7 +135,7 @@ def setrun(claw_pkg='classic'):
     # The current t, dt, and cfl will be printed every time step
     # at AMR levels <= verbosity.  Set verbosity = 0 for no printing.
     #   (E.g. verbosity == 2 means print only on levels 1 and 2.)
-    clawdata.verbosity = 0
+    clawdata.verbosity = 1
     
     
 
@@ -182,7 +182,7 @@ def setrun(claw_pkg='classic'):
     #   2 or 'superbee' ==> superbee
     #   3 or 'vanleer'  ==> van Leer
     #   4 or 'mc'       ==> MC limiter
-    clawdata.limiter = [4,4,4]
+    clawdata.limiter = [3,3,3]
     
     clawdata.use_fwaves = False    # True ==> use f-wave version of algorithms
     

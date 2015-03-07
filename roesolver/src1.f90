@@ -11,14 +11,15 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
     real(kind=8), intent(in) ::  aux(maux,1-mbc:mx+mbc)
     real(kind=8), intent(inout) ::  q(meqn,1-mbc:mx+mbc)
     ! added pressure storage
-    real(kind=8)   press(1-mbc:mx+mbc)
+    real(kind=8)   press,pressstarstar
     real(kind=8)   psistar(3,1-mbc:mx+mbc)
     real(kind=8)   psistarstar(3,1-mbc:mx+mbc)
     real(kind=8)   Qstarstar(3,1-mbc:mx+mbc)
     real(kind=8)   darea(1-mbc:mx+mbc)
     real(kind=8)   area(1-mbc:mx+mbc)
-    real(kind=8)   pi
+    real(kind=8)   pi,gamma
     common /cparam/  gamma
+
     pi=4d0*atan(1d0)
 
 !   Define area
@@ -28,7 +29,7 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
 !	radius2(i) = 0.5d0 + 0.15d0 * tanh(0.65d0 * (xcell - 15d0) - 5d0)
         if (xcell .le. 15.0d0) then
                area(i)=pi*(0.5d0 - 0.15d0 * tanh(0.65 * xcell- 5.d0))**2 
-               darea(i)=-0.612611d0 * 1/cosh(5.d0-0.65d0*xcell)**2 &
+               darea(i)= -0.612611d0 * 1/cosh(5.d0-0.65d0*xcell)**2 &
       &             * (0.5d0 + 0.15d0 * tanh(5.d0-0.65d0*xcell))
         else
                area(i)=pi*(0.5d0 + 0.15d0 * tanh(0.65 * (xcell-15d0)-5.d0))**2 
@@ -39,32 +40,32 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
     150    continue
 
 !   Calculate P from q. P=gamma1*(e + 0.5 rho*u^2)
-    do 11 i = 1,mx+mbc
-       press(i) =(gamma-1.d0)*(q(3,i) + 0.5d0* (q(2,i)**2.d0)/(q(1,i)))
-    11 end do
 
 !   Solve the coupled ODEs, Eq 17.40 Levque
     do 20 i=2-mbc,mx+mbc
+       press = (gamma-1.d0)*(q(3,i) - 0.5d0* (q(2,i)**2.d0)/(q(1,i)))
 !      Calculate psi* based on the Q*
        psistar(1,i)= -1.d0/area(i) * darea(i) * (q(2,i))
        psistar(2,i)= -1.d0/area(i) * darea(i) * (q(2,i)**2/q(1,i))
-       psistar(3,i)= -1.d0/area(i) * darea(i) * (q(2,i)/q(1,i))*(q(3,i)+press(i))
+       psistar(3,i)= -1.d0/area(i) * darea(i) * (q(2,i)/q(1,i))*(q(3,i)+press)
 
 !      Calculate Q** based on the psi*
        Qstarstar(1,i)=q(1,i)+ (dt/2) * psistar(1,i)
        Qstarstar(2,i)=q(2,i)+ (dt/2) * psistar(2,i)
        Qstarstar(3,i)=q(2,i)+ (dt/2) * psistar(3,i)
 
+       pressstarstar = (gamma-1.d0)*(Qstarstar(3,i)-0.5d0*Qstarstar(2,i)**2.d0 &
+              /Qstarstar(1,i))
 !      Calculate psi** based on Q**
        psistarstar(1,i)=-1.d0/area(i) * darea(i) * (Qstarstar(2,i))
        psistarstar(2,i)=-1.d0/area(i) * darea(i) * (Qstarstar(2,i)**2/Qstarstar(1,i))
        psistarstar(3,i)=-1.d0/area(i) * darea(i) &
-        * (Qstarstar(2,i)/Qstarstar(1,i))*(Qstarstar(3,i)+press(i))
+        * (Qstarstar(2,i)/Qstarstar(1,i))*(Qstarstar(3,i)+pressstarstar)
 
 !      Calculate the updated Q based on psi**
-       q(1,i)=q(1,i)+ dt * psistarstar(1,i) * darea(i)
-       q(2,i)=q(2,i)+ dt * psistarstar(2,i) * darea(i)
-       q(3,i)=q(3,i)+ dt * psistarstar(3,i) * darea(i)
+       q(1,i)=q(1,i)+ dt * psistarstar(1,i)! * darea(i)
+       q(2,i)=q(2,i)+ dt * psistarstar(2,i)! * darea(i)
+       q(3,i)=q(3,i)+ dt * psistarstar(3,i)! * darea(i)
     20 end do
 
 end subroutine src1

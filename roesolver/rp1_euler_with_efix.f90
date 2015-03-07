@@ -1,5 +1,5 @@
 ! =========================================================
-subroutine rp1(maxmx,meqn,mwaves,maux,mbc,mx,ql,qr,auxl,auxr,wave,s,amdq,apdq,dx,xlower)
+subroutine rp1(maxmx,meqn,mwaves,maux,mbc,mx,ql,qr,auxl,auxr,wave,s,amdq,apdq)
 ! =========================================================
 
 ! solve Riemann problems for the 1D Euler equations using Roe's
@@ -32,8 +32,6 @@ subroutine rp1(maxmx,meqn,mwaves,maux,mbc,mx,ql,qr,auxl,auxr,wave,s,amdq,apdq,dx
     dimension wave(meqn, mwaves,1-mbc:maxmx+mbc)
     dimension amdq(meqn,1-mbc:maxmx+mbc)
     dimension apdq(meqn,1-mbc:maxmx+mbc)
-!   # add an area variable
-    dimension area(1,1-mbc:maxmx+mbc)
 
 !     # local storage
 !     ---------------
@@ -41,25 +39,11 @@ subroutine rp1(maxmx,meqn,mwaves,maux,mbc,mx,ql,qr,auxl,auxr,wave,s,amdq,apdq,dx
     dimension u(1-mbc:maxmx+mbc),enth(1-mbc:maxmx+mbc)
     dimension a(1-mbc:maxmx+mbc)
     logical :: efix
-    real(kind=8)::gamma
- 
     common /cparam/  gamma
 
     data efix /.true./    !# use entropy fix for transonic rarefactions
 
     gamma1 = gamma - 1.d0
-!     # define area
-!     # multiply ql and qr by A
-!      do 150 i=1,mx
-!         xcell = xlower + (i-0.5d0)*dx
-!	 area = 1.398 + 0.347 * tanh(0.8*xcell - 0.4)
-!         ql(1,i)=area(i)*ql(1,i)
-!         ql(2,i)=area(i)*ql(2,i)
-!         ql(3,i)=area(i)*ql(3,i)
-!         qr(1,i)=area(i)*qr(1,i)
-!         qr(2,i)=area(i)*qr(2,i)
-!         qr(3,i)=area(i)*qr(3,i)
-!  150    continue
 
 !     # Compute Roe-averaged quantities:
 

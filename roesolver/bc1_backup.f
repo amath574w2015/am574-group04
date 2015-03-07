@@ -41,19 +41,21 @@ c-------------------------------------------------------
       go to (100,110,120,130) mthbc(1)+1
 c
   100 continue
+c     # user-specified boundary conditions go here in place of error output
 c     Subsonic inflow. Define p and u for the right going waves assuming
 c     u is positive. po, reservoir pressure, is allocated in each ghost
 c     cell
+c      po = 5.d0
       gamma_m = gamma - 1.d0
       gamma_a = gamma + 1.d0
       beta = gamma_a/gamma_m
       do ibc=1,mbc
-          p=gamma_m*(q(3,2-ibc)-0.5d0*q(2,2-ibc)**2.d0/q(1,2-ibc))
-          ubc=q(2,2-ibc)/q(1,2-ibc)-2.d0/sqrt(2.d0*gamma*gamma_m)*sqrt(gamma*p
-     &         /q(1,2-ibc))*(1.d0 - po/p)/sqrt(1.d0+beta*po/p)
-          q(1,1-ibc) = q(1,2-ibc)
-          q(2,1-ibc) = q(1,2-ibc)*ubc
-          q(3,1-ibc) = po/gamma_m+0.5d0*q(2,1-ibc)**2.d0/q(1,1-ibc) 
+          p=gamma_m*(q(3,1)-0.5d0*q(2,1)**2.d0/q(1,1))
+          ubc=q(2,1)/q(1,1)-2.d0/sqrt(2.d0*gamma*gamma_m)*sqrt(gamma*p
+     &         /q(1,1))*(1.d0 - po/p)/sqrt(1.d0+beta*po/p)
+          q(1,1-ibc) = q(1,1)
+          q(2,1-ibc) = q(1,1)*ubc
+          q(3,1-ibc) = po/gamma_m+0.5d0*ubc**2.d0*q(1,1) 
       enddo
       go to 199
 c
@@ -104,15 +106,15 @@ c      patm=0.5d0
      &        **2.d0/q(1,mx))
 c       subsonic outflow
         if(q(2,mx)/q(1,mx).lt.sqrt(gamma*p
-     &        /q(1,mx))) then
-           q(1,mx+ibc)=q(1,mx+ibc-1)
-           q(2,mx+ibc)=q(2,mx+ibc-1)
-           q(3,mx+ibc)=patm/gamma_m+0.5d0*q(2,mx+ibc-1)**
-     &       2.d0/q(1,mx+ibc-1)
+     &        /q(1,mx)))then
+           q(1,mx+ibc)=q(1,mx)
+           q(2,mx+ibc)=q(2,mx)
+           q(3,mx+ibc)=patm/gamma_m+0.5d0*q(2,mx)**
+     &       2.d0/q(1,mx)
 c       supersonic outflow
         else
            do m=1,meqn
-              q(m,mx+ibc)=q(m,mx+ibc-1)
+              q(m,mx+ibc)=q(m,mx)
            enddo
         endif
       enddo
