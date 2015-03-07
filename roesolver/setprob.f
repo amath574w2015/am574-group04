@@ -10,8 +10,8 @@ c     # Calorically perfect gas is assumed
 c
 c
       gamma = 1.4d0
-      po=6.0d0
-      patm=2.0d0
+      po=5.0d0
+      patm=4.5d0
       
                 
 

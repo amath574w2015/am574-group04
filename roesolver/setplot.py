@@ -27,7 +27,7 @@ def setplot(plotdata):
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.axescmd = 'subplot(3,1,1)'   # top figure
     plotaxes.xlimits = 'auto'
-    plotaxes.ylimits = [0.0,3.0]
+    plotaxes.ylimits = 'auto' #[0.0,5.0]
     plotaxes.title = 'Density'
 
     # Set up for item on these axes:
@@ -43,7 +43,7 @@ def setplot(plotdata):
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.axescmd = 'subplot(3,1,2)'   # bottom figure
     plotaxes.xlimits = 'auto'
-    plotaxes.ylimits = [-0.5,6.0]
+    plotaxes.ylimits = 'auto'  #[-2.0,15.0]
     plotaxes.title = 'Momentum'
 
     # Set up for item on these axes:
@@ -58,7 +58,7 @@ def setplot(plotdata):
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.axescmd = 'subplot(3,1,3)'   # bottom figure
     plotaxes.xlimits = 'auto'
-    plotaxes.ylimits = [5.0,25.0]
+    plotaxes.ylimits = 'auto' #[0.5,35.0]
     plotaxes.title = 'Energy'
 
     # Set up for item on these axes:

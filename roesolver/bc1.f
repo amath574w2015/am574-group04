@@ -49,11 +49,20 @@ c     cell
       beta = gamma_a/gamma_m
       do ibc=1,mbc
           p=gamma_m*(q(3,2-ibc)-0.5d0*q(2,2-ibc)**2.d0/q(1,2-ibc))
-          ubc=q(2,2-ibc)/q(1,2-ibc)-2.d0/sqrt(2.d0*gamma*gamma_m)*sqrt(gamma*p
-     &         /q(1,2-ibc))*(1.d0 - po/p)/sqrt(1.d0+beta*po/p)
-          q(1,1-ibc) = q(1,2-ibc)
-          q(2,1-ibc) = q(1,2-ibc)*ubc
-          q(3,1-ibc) = po/gamma_m+0.5d0*q(2,1-ibc)**2.d0/q(1,1-ibc) 
+!         if u is positive, two right going waves
+          if(q(2,2-ibc)/q(1,2-ibc).lt.0.0d0) then
+             ubc=q(2,2-ibc)/q(1,2-ibc)-2.d0/sqrt(2.d0*gamma*gamma_m)   
+     &          *sqrt(gamma*p/q(1,2-ibc))*(1.d0-po/p) 
+     &          /sqrt(1.d0+beta*po/p)
+             q(1,1-ibc) = (1.d0+beta*po/p)/(po/p+beta)*q(1,2-ibc)
+             q(2,1-ibc) = q(1,2-ibc)*ubc
+             q(3,1-ibc) = po/gamma_m+0.5d0*q(2,1-ibc)**2.d0/q(1,1-ibc)
+!         if u is negative, one right going wave
+          else 
+             q(1,1-ibc) = q(1,2-ibc)
+             q(2,1-ibc) = q(2,2-ibc)
+             q(3,1-ibc) = po/gamma_m+0.5d0*q(2,1-ibc)**2.d0/q(1,1-ibc)
+          endif
       enddo
       go to 199
 c
@@ -100,15 +109,28 @@ c      patm=0.5d0
       gamma_m = gamma-1.d0
       gamma_a = gamma + 1.d0
       do ibc=1,mbc
-        p=gamma_m*(q(3,mx)-0.5d0*q(2,mx)
-     &        **2.d0/q(1,mx))
+        p=gamma_m*(q(3,mx+ibc-1)-0.5d0*q(2,mx+ibc-1)
+     &        **2.d0/q(1,mx+ibc-1))
 c       subsonic outflow
-        if(q(2,mx)/q(1,mx).lt.sqrt(gamma*p
-     &        /q(1,mx))) then
-           q(1,mx+ibc)=q(1,mx+ibc-1)
-           q(2,mx+ibc)=q(2,mx+ibc-1)
-           q(3,mx+ibc)=patm/gamma_m+0.5d0*q(2,mx+ibc-1)**
-     &       2.d0/q(1,mx+ibc-1)
+        if(abs(q(2,mx+ibc-1)/q(1,mx+ibc-1)).lt.sqrt(gamma*p
+     &        /q(1,mx+ibc-1))) then
+!          velocity positive, one left going wave
+           if(q(2,mx+ibc-1)/q(1,mx+ibc-1).lt.0.d0) then
+             q(1,mx+ibc)=q(1,mx+ibc-1)
+             q(2,mx+ibc)=q(2,mx+ibc-1)
+             q(3,mx+ibc)=patm/gamma_m+0.5d0*q(2,mx+ibc-1)**
+     &         2.d0/q(1,mx+ibc-1)
+!          velocity negative, two left going waves
+           else
+             ubc=q(2,mx+ibc-1)/q(1,mx+ibc-1)+2.d0/sqrt(2.d0*gamma*
+     &          gamma_m)*sqrt(gamma*p/q(1,mx+ibc-1))*(1.d0-patm/p)
+     &          /sqrt(1.d0+beta*patm/p)
+             q(1,mx+ibc) = (1.d0+beta*patm/p)/(patm/p+beta)*
+     &          q(1,mx+ibc-1)
+             q(2,mx+ibc) = q(1,mx+ibc-1)*ubc
+             q(3,mx+ibc) = patm/gamma_m+0.5d0*q(2,mx+ibc-1)**
+     &          2.d0/q(1,mx+ibc-1)
+           endif
 c       supersonic outflow
         else
            do m=1,meqn
