@@ -105,8 +105,8 @@ def setrun(claw_pkg='classic'):
     if clawdata.output_style==1:
         # Output ntimes frames at equally spaced times up to tfinal:
         # Can specify num_output_times = 0 for no output
-        clawdata.num_output_times = 130
-        clawdata.tfinal = 80.000000
+        clawdata.num_output_times = 100
+        clawdata.tfinal = 150.000000
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
     elif clawdata.output_style == 2:

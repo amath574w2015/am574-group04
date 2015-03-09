@@ -27,11 +27,13 @@ c
 
       dimension mthbc(2)
 c     Local Variables
-      real(kind=8) p,ubc,po,patm
+      real(kind=8) rho1,u1,p1,c1,rho0,u0,p0
+      real(kind=8) patm,uN,pN,cN,rhoN,eN1,e0 
+      real(kind=8) uN1,pN1,rhoN1
       real(kind=8) gamma_m,gamma_a,beta
       
 
-      common /cparam/ gamma, po, patm 
+      common /cparam/ gamma, p0, patm 
 
 c
 c
@@ -47,21 +49,33 @@ c     cell
       gamma_m = gamma - 1.d0
       gamma_a = gamma + 1.d0
       beta = gamma_a/gamma_m
+
+!     Define variables in 1st interior cell
+      rho1 = q(1,1)
+      u1 = q(2,1)/q(1,1)
+      p1 = gamma_m*(q(3,1)-0.5d0*q(2,1)**2.d0/q(1,1))     
+      c1 = sqrt(gamma*p1/rho1)
+
       do ibc=1,mbc
-          p=gamma_m*(q(3,2-ibc)-0.5d0*q(2,2-ibc)**2.d0/q(1,2-ibc))
 !         if u is positive, two right going waves
-          if(q(2,2-ibc)/q(1,2-ibc).lt.0.0d0) then
-             ubc=q(2,2-ibc)/q(1,2-ibc)-2.d0/sqrt(2.d0*gamma*gamma_m)   
-     &          *sqrt(gamma*p/q(1,2-ibc))*(1.d0-po/p) 
-     &          /sqrt(1.d0+beta*po/p)
-             q(1,1-ibc) = (1.d0+beta*po/p)/(po/p+beta)*q(1,2-ibc)
-             q(2,1-ibc) = q(1,2-ibc)*ubc
-             q(3,1-ibc) = po/gamma_m+0.5d0*q(2,1-ibc)**2.d0/q(1,1-ibc)
+          if(u1.gt.0.0d0) then
+             u0=u1-2.d0/sqrt(2.d0*gamma*gamma_m)   
+     &          *c1*(1.d0-p0/p1)/sqrt(1.d0+beta*p0/p1)
+             rho0 = (1.d0+beta*p0/p1)/(p0/p1+beta)*rho1 
+             e0 = p0/gamma_m+0.5d0*u0**2.d0*rho0
+
+             q(1,1-ibc) = rho0
+             q(2,1-ibc) = rho0*u0
+             q(3,1-ibc) = e0
 !         if u is negative, one right going wave
           else 
-             q(1,1-ibc) = q(1,2-ibc)
-             q(2,1-ibc) = q(2,2-ibc)
-             q(3,1-ibc) = po/gamma_m+0.5d0*q(2,1-ibc)**2.d0/q(1,1-ibc)
+             rho0 = rho1
+             u0 = u1
+             e0 = p0/gamma_m+0.5d0*u0**2.d0*rho0
+
+             q(1,1-ibc) = rho0
+             q(2,1-ibc) = rho0*u0
+             q(3,1-ibc) = e0
           endif
       enddo
       go to 199
@@ -108,33 +122,46 @@ c     #Outflow boundary with two cases: Subsonic or Supersonic
 c      patm=0.5d0
       gamma_m = gamma-1.d0
       gamma_a = gamma + 1.d0
+      beta = gamma_a/gamma_m
+      
+
       do ibc=1,mbc
-        p=gamma_m*(q(3,mx+ibc-1)-0.5d0*q(2,mx+ibc-1)
-     &        **2.d0/q(1,mx+ibc-1))
+        uN = q(2,mx)/q(1,mx)
+        rhoN = q(1,mx)
+        cN = sqrt(gamma*pN/rhoN)
+        pN = gamma_m*(q(3,mx)-0.5d0*uN
+     &        **2.d0*rhoN)       
+
 c       subsonic outflow
-        if(abs(q(2,mx+ibc-1)/q(1,mx+ibc-1)).lt.sqrt(gamma*p
-     &        /q(1,mx+ibc-1))) then
+        if(abs(uN).lt.cN) then
 !          velocity positive, one left going wave
-           if(q(2,mx+ibc-1)/q(1,mx+ibc-1).lt.0.d0) then
-             q(1,mx+ibc)=q(1,mx+ibc-1)
-             q(2,mx+ibc)=q(2,mx+ibc-1)
-             q(3,mx+ibc)=patm/gamma_m+0.5d0*q(2,mx+ibc-1)**
-     &         2.d0/q(1,mx+ibc-1)
+           if(uN.gt.0.d0) then
+             rhoN1 = (1.d0+beta*patm/pN)/
+     &          (patm/pN+beta)*rhoN
+             uN1 = uN
+             eN1 = pN/gamma_m+0.5d0*uN1**2.d0*rhoN1
+
+             q(1,mx+ibc)=rhoN1
+             q(2,mx+ibc)=rhoN1*uN1
+             q(3,mx+ibc)=eN1
+
 !          velocity negative, two left going waves
            else
-             ubc=q(2,mx+ibc-1)/q(1,mx+ibc-1)+2.d0/sqrt(2.d0*gamma*
-     &          gamma_m)*sqrt(gamma*p/q(1,mx+ibc-1))*(1.d0-patm/p)
-     &          /sqrt(1.d0+beta*patm/p)
-             q(1,mx+ibc) = (1.d0+beta*patm/p)/(patm/p+beta)*
-     &          q(1,mx+ibc-1)
-             q(2,mx+ibc) = q(1,mx+ibc-1)*ubc
-             q(3,mx+ibc) = patm/gamma_m+0.5d0*q(2,mx+ibc-1)**
-     &          2.d0/q(1,mx+ibc-1)
+             rhoN1 = (1.d0+beta*patm/pN)/(patm/pN+beta)*
+     &          rhoN
+             uN1 = uN+2.d0/sqrt(2.d0*gamma*
+     &          gamma_m)*cN*(1.d0-patm/pN)
+     &          /sqrt(1.d0+beta*patm/pN)
+             eN1 = patm/gamma_m+0.5d0*uN1**2.d0*rhoN1
+
+             q(1,mx+ibc) = rhoN1
+             q(2,mx+ibc) = rhoN1*uN1
+             q(3,mx+ibc) = eN1
            endif
-c       supersonic outflow
+c       supersonic outflow, just extrapolate
         else
            do m=1,meqn
-              q(m,mx+ibc)=q(m,mx+ibc-1)
+              q(m,mx+ibc)=q(m,mx)
            enddo
         endif
       enddo

@@ -25,19 +25,10 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
 !   Define area
     do 150 i=1,mx
         xcell = xlower + (i-0.5d0)*dx
-!	radius1(i) = 0.5d0 - 0.15d0 * tanh(0.65d0 * xcell - 5d0)
-!	radius2(i) = 0.5d0 + 0.15d0 * tanh(0.65d0 * (xcell - 15d0) - 5d0)
-!        if (xcell .le. 15.0d0) then
         area(i)=pi*(0.5d0 - 0.4d0 * sin(xcell/5.d0))**2 
         darea(i)= -0.502655d0 *cos(xcell/5.d0) &
                * (0.5d0 - 0.4d0 * sin(xcell/5.d0))
-!        else
-!               area(i)=pi*(0.5d0 + 0.25d0 * tanh(0.65 * (xcell-15d0)-5.d0))**2 
-!               darea(i)=1.02102d0 * 1/cosh(5.d0-0.65d0*(xcell-15d0))**2 &
-!                    * (0.5d0 - 0.25d0 * tanh(5.d0-0.65d0*(xcell-15d0)))
-!        endif
-
-    150    continue
+   150    continue
 
 !   Calculate P from q. P=gamma1*(e + 0.5 rho*u^2)
 
@@ -46,7 +37,7 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
        press = (gamma-1.d0)*(q(3,i) - 0.5d0* q(2,i)**2.d0/(q(1,i)))
 !      Calculate psi* based on the Q*
        psistar(1)= -1.d0/area(i) * darea(i) * (q(2,i))
-       psistar(2)= -1.d0/area(i) * darea(i) * (q(2,i)**2/q(1,i))
+       psistar(2)= -1.d0/area(i) * darea(i) * (-press + q(2,i)**2/q(1,i))
        psistar(3)= -1.d0/area(i) * darea(i) * (q(2,i)/q(1,i))*(q(3,i)+press)
 
 !      Calculate Q** based on the psi*
@@ -57,9 +48,10 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
        pressstarstar = (gamma-1.d0)*(Qstarstar(3)-0.5d0*Qstarstar(2)**2.d0 &
               /Qstarstar(1))
 !      Calculate psi** based on Q**
-       psistarstar(1)=-1.d0/area(i) * darea(i) * (Qstarstar(2))
-       psistarstar(2)=-1.d0/area(i) * darea(i) * (Qstarstar(2)**2/Qstarstar(1))
-       psistarstar(3)=-1.d0/area(i) * darea(i) &
+       psistarstar(1)= -1.d0/area(i) * darea(i) * (Qstarstar(2))
+       psistarstar(2)= -1.d0/area(i) * darea(i) * (-pressstarstar + &
+           Qstarstar(2)**2/Qstarstar(1))
+       psistarstar(3)= -1.d0/area(i) * darea(i) &
         * (Qstarstar(2)/Qstarstar(1))*(Qstarstar(3)+pressstarstar)
 
 !      Calculate the updated Q based on psi**

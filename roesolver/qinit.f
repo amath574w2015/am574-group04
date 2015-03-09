@@ -18,11 +18,7 @@ c
          xcell = xlower + (i-0.5d0)*dx
          q(1,i) = 0.5d0 !# density
          q(2,i) = 0.0d0 !# momentum
-!          if(xcell.lt.1.d0) then
-!             q(3,i) = po/(gamma - 1.d0) + 0.5d0*q(2,i)**2.d0/q(1,i)
-!          else
-             q(3,i) = patm/(gamma-1.d0) + 0.5d0*q(2,i)**2.d0/q(1,i) !# energy
-!          endif
+         q(3,i) = patm/(gamma-1.d0) + 0.5d0*q(2,i)**2.d0/q(1,i) !# energy
   150    continue
 c
 
