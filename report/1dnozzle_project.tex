@@ -20,7 +20,7 @@
 \maketitle
 
 \section{Introduction}
-The pseudo-1D Euler equations will be explored for the case of an unsteady nozzle problem with fixed geometry. The simulations of the nozzle will be run until the steady state is reached for various pressure ratios that will result in purely subsonic flow, choked subsonic flow, and purely supersonic flow. In each case, the steady state results will be compared to the theoretical quasi-1D nozzle equations for the accuracy of the different flux methods used. Because the pseudo-1D Euler equations inherently contains a source term, fractional splitting methods will be used to account for the source term. This will require the implementation of a Runge-Kutta method in order to solve the ODE when the solution is reacted according to the source term.
+The pseudo-1D Euler equations will be explored for the case of an unsteady nozzle problem with fixed geometry. The simulations of the nozzle will be run until the steady state is reached for various pressure ratios that will result in purely subsonic flow, choked subsonic flow, and purely supersonic flow. In each case, the steady state results will be compared to the theoretical quasi-1D nozzle equations, which predict the outflow velocity and shock location if one exists, for the accuracy of the different flux methods used. Because the pseudo-1D Euler equations inherently contains a source term, fractional splitting methods will be used to account for the source term. This will require the implementation of a Runge-Kutta method in order to solve the ODE when the solution is reacted according to the source term.
 
 \section{Pseudo-1D Euler Equations}
 The governing pseudo-1D Euler equation for the simulations is defined by
@@ -35,14 +35,14 @@ where the area can be pulled out by
 \begin{split}
 A q_t + f(A q)_x = S \\
 A q_t + \frac{dA}{dx} f(q) + A f(q)_x = S \\
-q_t + f(q)_x = S - \frac{dA}{dx} f(q) \\
+q_t + f(q)_x = \frac{1}{A}S - \frac{1}{A} \frac{dA}{dx} f(q) \\
 \end{split}
 \end{equation*}
 
 such that the reformulated equation is 
 
 \begin{equation}
-\frac{d}{dt} \left[ \begin{array}{c} \rho  \\ \rho u  \\ e \end{array} \right] + \frac{d}{dx} \left[ \begin{array}{c} \rho u  \\ \rho u^2 + p \\ u(e + p) \end{array} \right] = \left[ \begin{array}{c} -\frac{1}{A}\frac{dA}{dx} \rho u \\ -\frac{1}{A} \frac{dA}{dx} \rho u^2  \\ -\frac{1}{A} \frac{dA}{dx}  (e + p) \end{array} \right]
+\frac{d}{dt} \left[ \begin{array}{c} \rho  \\ \rho u  \\ e \end{array} \right] + \frac{d}{dx} \left[ \begin{array}{c} \rho u  \\ \rho u^2 + p \\ u(e + p) \end{array} \right] = \left[ \begin{array}{c} -\frac{1}{A}\frac{dA}{dx} \rho u \\ -\frac{1}{A} \frac{dA}{dx} \rho u^2  \\ -\frac{1}{A} \frac{dA}{dx}  u(e + p) \end{array} \right]
 \end{equation}
 
 where S is the original source term vector and the new conserved variables are $q = [\rho, \rho u, e]^T$, similar to the 1D Euler equations. The flux Jacobian of the system is given by
@@ -71,6 +71,27 @@ Solving for the eigenvectors, r, results in
 R = \left[ \begin{array}{c |c | c} r^1 & r^2 & r^3 \end{array} \right]= \left[ \begin{array}{ccc} 1 & 1 & 1 \\ u- c & u  & u + c \\ H - u c &  H - \frac{c^2}{\gamma - 1} & H + u c   \end{array} \right] 
 \end{split}
 \end{equation}
+
+\section{Physical Model}
+The simulation will be modeling flow through a converging-diverging nozzle with geometry given by
+
+\begin{equation}
+\begin{split}
+r = 0.5 - 0.15 \text{tanh}(0.65x - 5) \ \ \text{if} \ \ 0 < x < 15 \\
+r = 0.5 + 0.15 \text{tanh}(0.65(x - 15) - 5) \ \ \text{if} \ \ 15 < x < 30 \\
+A = \pi r^2
+\end{split}
+\end{equation}
+
+and shown in Fig. 
+
+There can be three different types of flow that exist in this nozzle that are dependent on the pressures at the inlet, opened to a pressure reservoir, and the outlet, opened to atmosphere. It is best to define these flow types by the Mach number
+
+\begin{equation}
+M = \frac{u}{c}
+\end{equation} 
+
+The first type of flow results when the pressure ratio, $p_{out} / p_{in}$, is higher than a certain threshold such that the flow is purely subsonic flow, $M < 1$. Flow accelerates through the converging part, but never reaches a sonic speed, or $M = 1$, at the throat of the nozzle. This forces the flow to decelerate through the remaining diverging part of the nozzle such that the flow in the nozzle is entirely subsonic, $M < 1$. The second type of flow is supersonic when the pressure ratio is lower than a certain threshold, where flow accelerates through the converging section and reaches $M = 1$ at the throat. Physics dictates that the flow must now accelerate in the remaining diverging part of the nozzle which results in $M > 1$ at the outlet of the nozzle. These two conditions are a result of the pressure ratios being above a threshold for pure subsonic and below a threshold for supersonic. If the pressure ratio lies in between these thresholds, a shock will form. This type of flow will be considered the choked subsonic flow where the flow reaches sonic at the throat, but a shock appears in the diverging section of the nozzle. The shock exists to raise the pressure of the flow such that it equals the atmospheric pressure at the exit.
 
 \section{Riemann Problem - Euler Equations}
 To solve the Euler equation Riemann problem, the waves are split into the left going and right going waves according to the eigenvalues. This means that if the flow is subsonic then $\lambda^1$ is a left going wave and $\lambda^2$ and $\lambda^3$ are right going waves, while if the flow is supersonic then all waves are right going waves. The coefficients of these eigenvectors, $\alpha$, may be determined by the following which involves taking the inverse of the eigenvector matrix, R.
@@ -121,7 +142,7 @@ In order to initiate flow through the nozzle, boundary conditions must be used a
 In the case of a subsonic inlet, the 1-wave is traveling out of the domain while the 2-wave and 3-wave are moving into the domain. This means that two primitive variables must be defined from the boundary, $u_0$ and $p_0$ in the first ghost cell. Because pressure will be defined at the inlet from the reservoir, the corresponding $u_0$ can be determined by the Hugoniot-Loci for the 3-wave that links $q_r$ to $q_0$, where $q_0$ are the conserved variables in the first ghost cell. The Rankine-Hugoniot conditions are applied in this case to derive an equation for $u_0$ in terms of $p_0$ and $\gamma$, Leveque(2011),
 
 \begin{equation}
-u_0 = u_1 + \frac{2}{\sqrt{2 \gamma (\gamma - 1)}} \sqrt{\frac{\gamma p_1}{\rho_1}} \left( \frac{1 - p_0 / p_1}{\sqrt{1 + \beta p_0 / p_1}} \right)
+u_0 = u_1 - \frac{2}{\sqrt{2 \gamma (\gamma - 1)}} \sqrt{\frac{\gamma p_1}{\rho_1}} \left( \frac{1 - p_0 / p_1}{\sqrt{1 + \beta p_0 / p_1}} \right)
 \end{equation}
 
 where $\beta = (\gamma + 1) / (\gamma  - 1)$ and the subscript 1 refers to the first interior cell. The energy is defined by 
@@ -155,7 +176,7 @@ q_n  =  q_{n-1}
 \section{Numerical Method}
 
 \subsection{Fractional Splitting}
-Because the psuedo-1D Euler equation given by Eqn. \ref{psuedoeuler} contains a source term, $p \frac{dA}{dx}$, the typical Riemann solving method can't be applied. In order to account for this source term, a fractional splitting method is incorporated. Two different types of fractional splitting will be tested: Gudonov's splitting, 1st order accurate, and Strang splitting, 2nd order accurate. 
+Because the psuedo-1D Euler equation given by Eqn. \ref{psuedoeuler} contains a source term, $p \frac{dA}{dx}$, the typical Riemann solving method can't be applied. In order to account for this source term, a fractional splitting method is incorporated, which is chosen to be the Godunov splitting.
 \\
 \\
 Starting with Gudonov splitting, at each timestep, the solution will be advected and then reacted. This two step method takes the form of
@@ -163,7 +184,7 @@ Starting with Gudonov splitting, at each timestep, the solution will be advected
 \begin{equation}
 \begin{split}
 \text{Step 1:} \ \ q_t + \bar{u} q_x = 0 \\
-\text{Step 2:} \ \ q_t = -\beta(q)
+\text{Step 2:} \ \ q_t = -\psi(q)
 \end{split}
 \end{equation}  
 
@@ -176,8 +197,25 @@ The first step will be solved first using various different limiter methods, upw
 \label{eq:splitting}
 \end{equation}
 
-\subsection{Riemann Solver Methods}
-The first step in the split method is implemented as a modification to an existing Riemann solver within Clawpack, called 'rp1\_euler\_with\_efix.f90'. This is a 1D Euler solver has the Roe-averaged quantities and wave solutions already programmed into it. This solver can be used with limiter methods specified by the 'setrun.py' file. 
+\subsection{Flux Limiter Methods}
+The first step in the split method is implemented as a modification to an existing Riemann solver within Clawpack, called 'rp1\_euler\_with\_efix.f90'. This is a 1D Euler solver has the Roe-averaged quantities and wave solutions already programmed into it. This solver can be used with limiter methods specified by the 'setrun.py' file.
+
+In general, the flux-limiter method is of the form:
+
+\begin{equation}
+Q^{n+1}_i=Q^n_i-\nu(Q^n_i-Q^n_{i-1})-\frac{1}{2}\nu(1-\nu)[\phi(\theta^n_{i+1/2})(Q^n_{i+1}-Q^n_i)-\phi(\theta^n_{i-1/2})(Q^n_{i}-Q^n_{i-1})]
+\end{equation}
+If $ \bar{u} > 0 $, where $ \nu=\frac{\bar{u}\Delta t}{\Delta x} $, and $ \theta^n_{i-1/2}=\frac{\Delta Q^n_{i-3/2}}{\Delta Q^n_{i-1/2}} $.
+
+The following functions of $ \theta $ were implemented for their corresponding limiter functions.
+
+\begin{align}
+\text{upwind:} \ \ & \phi(\theta)=0 \\
+\text{Lax-Wendroff:} \ \ & \phi(\theta)=1 \\
+\text{superbee:} \ \ & \phi(\theta)=max(0,min(1,2\theta), min(2,\theta)) \\
+\text{MC:} \ \ & \phi(\theta)=max(0,min(1+\theta)/2,2, 2\theta)
+\end{align}
+
 \subsection{Source Terms}
 The second step implements an optional source function that uses a Runge-Kutta method to solve a set of three ODEs. The Runge-Kutta solver takes the form:
 \begin{equation}
