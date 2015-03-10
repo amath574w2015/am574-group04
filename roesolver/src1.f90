@@ -34,7 +34,7 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
 		end if
 	area(i)=pi*radius(i)**2
 	darea(i)=0.74022d0 * (1d0-0.3d0 * (1d0+cos(1d0/8d0 &
-	* pi * (x-16d0)))*sin(1d0/8d0 * pi *(x-16d0)))
+	* pi * (x-16d0))))*sin(1d0/8d0 * pi *(x-16d0))
 
 !        area(i)=pi*(0.5d0 - 0.4d0 * sin(xcell/5.d0))**2 
 !        darea(i)= -0.502655d0 *cos(xcell/5.d0) &
