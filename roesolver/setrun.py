@@ -55,10 +55,10 @@ def setrun(claw_pkg='classic'):
     
     # Lower and upper edge of computational domain:
     clawdata.lower[0] = 0.000000e+00          # xlower
-    clawdata.upper[0] = 16.000000e+00          # xupper
+    clawdata.upper[0] = 32.000000e+00          # xupper
     
     # Number of grid cells:
-    clawdata.num_cells[0] = 1000      # mx
+    clawdata.num_cells[0] = 2000      # mx
     
 
     # ---------------

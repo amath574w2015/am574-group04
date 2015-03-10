@@ -17,7 +17,8 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
     real(kind=8)   Qstarstar(3)
     real(kind=8)   darea(1-mbc:mx+mbc)
     real(kind=8)   area(1-mbc:mx+mbc)
-    real(kind=8)   pi,gamma
+    real(kind=8)   radius(1-mbc:mx+mbc)
+    real(kind=8)   pi,gamma,rad1,xcell
     common /cparam/  gamma
 
     pi=4d0*atan(1d0)
@@ -25,9 +26,19 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
 !   Define area
     do 150 i=1,mx
         xcell = xlower + (i-0.5d0)*dx
-        area(i)=pi*(0.5d0 - 0.4d0 * sin(xcell/5.d0))**2 
-        darea(i)= -0.502655d0 *cos(xcell/5.d0) &
-               * (0.5d0 - 0.4d0 * sin(xcell/5.d0))
+	rad1=1d0-0.3d0 * (1d0+cos(pi*(xcell-16d0)/8d0))
+	if (abs(xcell-16d0) .lt. 8d0) then
+		radius(i)=rad1
+	else
+		radius(i)=1d0
+		end if
+	area(i)=pi*radius(i)**2
+	darea(i)=0.74022d0 * (1d0-0.3d0 * (1d0+cos(1d0/8d0 &
+	* pi * (x-16d0)))*sin(1d0/8d0 * pi *(x-16d0)))
+
+!        area(i)=pi*(0.5d0 - 0.4d0 * sin(xcell/5.d0))**2 
+!        darea(i)= -0.502655d0 *cos(xcell/5.d0) &
+!               * (0.5d0 - 0.4d0 * sin(xcell/5.d0))
    150    continue
 
 !   Calculate P from q. P=gamma1*(e + 0.5 rho*u^2)
@@ -37,7 +48,7 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
        press = (gamma-1.d0)*(q(3,i) - 0.5d0* q(2,i)**2.d0/(q(1,i)))
 !      Calculate psi* based on the Q*
        psistar(1)= -1.d0/area(i) * darea(i) * (q(2,i))
-       psistar(2)= -1.d0/area(i) * darea(i) * (-press + q(2,i)**2/q(1,i))
+       psistar(2)= -1.d0/area(i) * darea(i) * (q(2,i)**2/q(1,i))
        psistar(3)= -1.d0/area(i) * darea(i) * (q(2,i)/q(1,i))*(q(3,i)+press)
 
 !      Calculate Q** based on the psi*
@@ -49,15 +60,15 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
               /Qstarstar(1))
 !      Calculate psi** based on Q**
        psistarstar(1)= -1.d0/area(i) * darea(i) * (Qstarstar(2))
-       psistarstar(2)= -1.d0/area(i) * darea(i) * (-pressstarstar + &
+       psistarstar(2)= -1.d0/area(i) * darea(i) * ( &
            Qstarstar(2)**2/Qstarstar(1))
        psistarstar(3)= -1.d0/area(i) * darea(i) &
         * (Qstarstar(2)/Qstarstar(1))*(Qstarstar(3)+pressstarstar)
 
 !      Calculate the updated Q based on psi**
-       q(1,i)=q(1,i)+ dt * psistarstar(1)! * darea(i)
-       q(2,i)=q(2,i)+ dt * psistarstar(2)! * darea(i)
-       q(3,i)=q(3,i)+ dt * psistarstar(3)! * darea(i)
+       q(1,i)=q(1,i)+ dt * psistarstar(1) !* darea(i)
+       q(2,i)=q(2,i)+ dt * psistarstar(2) !* darea(i)
+       q(3,i)=q(3,i)+ dt * psistarstar(3) !* darea(i)
     20 end do
 
 end subroutine src1
