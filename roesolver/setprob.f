@@ -11,7 +11,7 @@ c
 c
       gamma = 1.4d0
       p0=5.0d0
-      patm=4.5d0
+      patm=3.5d0
       
                 
 

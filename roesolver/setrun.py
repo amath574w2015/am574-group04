@@ -54,11 +54,11 @@ def setrun(claw_pkg='classic'):
     clawdata.num_dim = num_dim
     
     # Lower and upper edge of computational domain:
-    clawdata.lower[0] = 0.000000e+00          # xlower
-    clawdata.upper[0] = 32.000000e+00          # xupper
+    clawdata.lower[0] = 6.000000e+00          # xlower
+    clawdata.upper[0] = 18.000000e+00          # xupper
     
     # Number of grid cells:
-    clawdata.num_cells[0] = 2000      # mx
+    clawdata.num_cells[0] = 1000      # mx
     
 
     # ---------------
@@ -105,7 +105,7 @@ def setrun(claw_pkg='classic'):
     if clawdata.output_style==1:
         # Output ntimes frames at equally spaced times up to tfinal:
         # Can specify num_output_times = 0 for no output
-        clawdata.num_output_times = 100
+        clawdata.num_output_times = 150
         clawdata.tfinal = 150.000000
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
@@ -190,7 +190,7 @@ def setrun(claw_pkg='classic'):
     #   src_split == 0 or 'none'    ==> no source term (src routine never called)
     #   src_split == 1 or 'godunov' ==> Godunov (1st order) splitting used, 
     #   src_split == 2 or 'strang'  ==> Strang (2nd order) splitting used,  not recommended.
-    clawdata.source_split = 1
+    clawdata.source_split = 0
     
     
     # --------------------

@@ -50,7 +50,7 @@ def setplot(plotdata):
     plotaxes.axescmd = 'subplot(5,1,2)'   # bottom figure
     plotaxes.xlimits = 'auto'
     plotaxes.ylimits = 'auto'  #[-2.0,15.0]
-    plotaxes.title = 'Momentum'
+    plotaxes.title = 'Velocity'
 
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')

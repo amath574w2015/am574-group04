@@ -128,10 +128,9 @@ c      patm=0.5d0
       do ibc=1,mbc
         uN = q(2,mx)/q(1,mx)
         rhoN = q(1,mx)
-        cN = sqrt(gamma*pN/rhoN)
         pN = gamma_m*(q(3,mx)-0.5d0*uN
      &        **2.d0*rhoN)       
-
+        cN = sqrt(gamma*pN/rhoN)
 c       subsonic outflow
         if(abs(uN).lt.cN) then
 !          velocity positive, one left going wave
