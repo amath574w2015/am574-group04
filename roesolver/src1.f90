@@ -26,19 +26,30 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
 !   Define area
     do 150 i=1,mx
         xcell = xlower + (i-0.5d0)*dx
-        if (abs(xcell-16d0) .lt. 8d0) then
-            radius(i)=1d0-0.3d0 * (1d0+cos(pi*(xcell-16d0)/8d0))
-            darea(i)=0.74022d0 * (1d0-0.3d0 * (1d0+cos(1d0/8d0 &
-               *pi*(xcell-16d0))))*sin(1d0/8d0*pi*(xcell-16d0))
+!        if (abs(xcell-16d0) .le. 8d0) then
+!            radius(i)=1d0-0.4d0 * (1d0+cos(pi*(xcell-16d0)/8d0))
+!            darea(i)=0.98696d0 * (1d0-0.4d0 * (1d0+cos(1d0/8d0 &
+!               *pi*(xcell-16d0))))*sin(1d0/8d0*pi*(xcell-16d0))
+!        else
+!            radius(i)=1.d0
+!            darea(i)=0.0d0
+!        end if
+!        area(i)=pi*radius(i)**2.d0
+        
+        if (abs(xcell-15.d0).le.10.d0) then
+           area(i)=pi*(0.5d0 - 0.3d0 * sin(pi*(xcell-10.0d0)/10.d0))**2.d0 
+           darea(i)= 0.188496d0*pi*cos(pi*(xcell-10.0d0)/10.d0) &
+               * (0.5d0 - 0.3d0 * sin(pi*(xcell-10.d0)/10.d0))
         else
-            radius(i)=1.d0
-            darea(i)=0.0d0
-        end if
-        area(i)=pi*radius(i)**2.d0
+           area(i) = pi*(0.8d0)**2.d0
+           darea(i) = 0.d0
+        endif
 
-!        area(i)=pi*(0.5d0 - 0.4d0 * sin(xcell/5.d0))**2 
-!        darea(i)= -0.502655d0 *cos(xcell/5.d0) &
-!               * (0.5d0 - 0.4d0 * sin(xcell/5.d0))
+!        area(i)=pi*(0.5d0 - 0.4d0 * sin((xcell)/5.d0))**2.d0
+!        darea(i)= -0.502655d0*cos((xcell)/5.d0) &
+!             * (0.5d0 - 0.4d0 * sin((xcell)/5.d0))
+
+
    150    continue
 
 !   Calculate P from q. P=gamma1*(e + 0.5 rho*u^2)
