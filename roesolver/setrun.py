@@ -54,8 +54,8 @@ def setrun(claw_pkg='classic'):
     clawdata.num_dim = num_dim
     
     # Lower and upper edge of computational domain:
-    clawdata.lower[0] = 6.000000e+00          # xlower
-    clawdata.upper[0] = 18.000000e+00          # xupper
+    clawdata.lower[0] = 0.000000e+00          # xlower
+    clawdata.upper[0] = 26.000000e+00          # xupper
     
     # Number of grid cells:
     clawdata.num_cells[0] = 1000      # mx
@@ -190,7 +190,7 @@ def setrun(claw_pkg='classic'):
     #   src_split == 0 or 'none'    ==> no source term (src routine never called)
     #   src_split == 1 or 'godunov' ==> Godunov (1st order) splitting used, 
     #   src_split == 2 or 'strang'  ==> Strang (2nd order) splitting used,  not recommended.
-    clawdata.source_split = 0
+    clawdata.source_split = 1
     
     
     # --------------------
@@ -207,7 +207,7 @@ def setrun(claw_pkg='classic'):
     #   3 or 'wall'     => solid wall for systems where q(2) is normal velocity
     
     clawdata.bc_lower[0] = 0   # at xlower
-    clawdata.bc_upper[0] = 0   # at xupper
+    clawdata.bc_upper[0] = 1   # at xupper
                   
     return rundata
 

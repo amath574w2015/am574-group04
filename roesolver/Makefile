@@ -36,6 +36,8 @@ MODULES = \
 SOURCES = \
   setprob.f \
   qinit.f \
+  def_area.f90 \
+  def_darea.f90 \
   rp1_euler_with_efix.f90 \
   $(CLAW)/classic/src/1d/setaux.f90 \
   bc1.f \

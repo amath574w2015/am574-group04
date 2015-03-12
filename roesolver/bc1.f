@@ -137,8 +137,11 @@ c       subsonic outflow
            if(uN.gt.0.d0) then
              rhoN1 = (1.d0+beta*patm/pN)/
      &          (patm/pN+beta)*rhoN
-             uN1 = uN
-             eN1 = pN/gamma_m+0.5d0*uN1**2.d0*rhoN1
+             uN1 = uN+2.d0/sqrt(2.d0*gamma*
+     &          gamma_m)*cN*(1.d0-patm/pN)
+     &          /sqrt(1.d0+beta*patm/pN)
+
+             eN1 = patm/gamma_m+0.5d0*uN1**2.d0*rhoN1
 
              q(1,mx+ibc)=rhoN1
              q(2,mx+ibc)=rhoN1*uN1

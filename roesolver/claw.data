@@ -5,8 +5,8 @@
 ########################################################
 
 1                    =: num_dim             
-6.0                  =: lower               
-18.0                 =: upper               
+0.0                  =: lower               
+26.0                 =: upper               
 1000                 =: num_cells           
 
 3                    =: num_eqn             
@@ -32,7 +32,7 @@ T                    =: output_t0
 T                    =: dt_variable         
 2                    =: order               
 0                    =: verbosity           
-0                    =: source_split        
+1                    =: source_split        
 0                    =: capa_index          
 F                    =: use_fwaves          
 
@@ -40,7 +40,7 @@ F                    =: use_fwaves
 
 2                    =: num_ghost           
 0                    =: bc_lower            
-0                    =: bc_upper            
+1                    =: bc_upper            
 
 F                    =: restart             
 'fort.q0006'         =: restart_file        

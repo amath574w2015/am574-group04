@@ -9,14 +9,33 @@ function setplot is called to set the plot parameters.
 #--------------------------
 def setplot(plotdata):
 #--------------------------
-    
+    import numpy as np
+    import math
     """ 
     Specify what is to be plotted at each frame.
     Input:  plotdata, an instance of clawpack.visclaw.data.ClawPlotData.
     Output: a modified version of plotdata.
     
     """ 
+    def density(current_data):
+        import math
 
+        q = current_data.q
+        mx = len(q[1,:])
+        xlower = 6.0
+        dx = (26 - xlower)/mx
+	radius = []
+	area = []
+        for i in range(mx):
+		xcell = xlower + (i +1.0 - 0.5)*dx 
+		if (abs(xcell-16.0) < 8.0):
+			radius.append(1.0-0.30 * (1.0+math.cos(math.pi*(xcell-16.0)/8.0)))
+		else:
+			radius.append(1.0)
+        
+		area.append(math.pi*radius[i]**2.0)
+	density = q[0,:]/area[:] 
+        return density
 
     plotdata.clearfigures()  # clear any old figures,axes,items data
 
@@ -33,7 +52,7 @@ def setplot(plotdata):
 
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
-    plotitem.plot_var = 0
+    plotitem.plot_var = 0 #density 
     plotitem.plotstyle = '-o'
     plotitem.color = 'b'
 
@@ -84,7 +103,7 @@ def setplot(plotdata):
     def pressure(current_data):
         q = current_data.q
         gamma = 1.4
-        p = (gamma-1.) * (q[2,:] - 0.5*q[1,:]**2 / q[0,:])
+        p = (gamma-1.) * (q[2,:] - 0.5*q[1,:]**2/ q[0,:])
         return p
 
     # Set up for item on these axes:
