@@ -161,7 +161,7 @@ c       subsonic outflow
              q(3,mx+ibc) = eN1
            endif
 c       supersonic outflow, just extrapolate
-        else
+        elseif(abs(uN).ge.cN) then
            do m=1,meqn
               q(m,mx+ibc)=q(m,mx)
            enddo
