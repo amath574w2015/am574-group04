@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.1.11)  9 MAR 2015 15:04
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.1.11)  12 MAR 2015 11:29
 entering extended mode
 **1dnozzle_project.tex
 (C:\Users\Alex\Documents\GitHub\am574-group04\report\1dnozzle_project.tex
@@ -15,8 +15,8 @@ an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
 ishmax, welsh, loaded.
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-("C:\Program Files\MiKTeX 2.9\tex\latex\base\size10.clo"
-File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\size11.clo"
+File: size11.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
 \c@section=\count80
@@ -390,12 +390,12 @@ LaTeX Info: Redefining \nameref on input line 18.
 * \topmargin=-37.0pt
 * \headheight=12.0pt
 * \headsep=25.0pt
-* \topskip=10.0pt
+* \topskip=11.0pt
 * \footskip=30.0pt
-* \marginparwidth=65.0pt
-* \marginparsep=11.0pt
+* \marginparwidth=59.0pt
+* \marginparsep=10.0pt
 * \columnsep=10.0pt
-* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
 * \hoffset=0.0pt
 * \voffset=0.0pt
 * \mag=1000
@@ -415,50 +415,46 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 21.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
-{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3]
-Underfull \hbox (badness 10000) in paragraph at lines 179--183
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3] [4]
+Underfull \hbox (badness 10000) in paragraph at lines 182--186
 
  []
 
-[4]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 239.
- [5]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 239.
+[5] [6]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 306.
+ [7]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 306.
 
 (C:\Users\Alex\Documents\GitHub\am574-group04\report\1dnozzle_project.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 239.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 239.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 306.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 306.
 Package rerunfilecheck Info: File `1dnozzle_project.out' has not changed.
-(rerunfilecheck)             Checksum: 2EA6EF6293C7DAF4B00C1EE7A06C0191;1038.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 239.
- )
-(\end occurred inside a group at level 1)
-
-### simple group (level 1) entered at line 12 ({)
-### bottom level 
+(rerunfilecheck)             Checksum: 84762046178BE89BB6FD7879A276DC99;1230.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 306.
+ ) 
 Here is how much of TeX's memory you used:
- 6659 strings out of 493921
- 96257 string characters out of 3147285
- 195380 words of memory out of 3000000
- 9821 multiletter control sequences out of 15000+200000
- 11195 words of font info for 44 fonts, out of 3000000 for 9000
+ 6683 strings out of 493921
+ 96539 string characters out of 3147285
+ 188324 words of memory out of 3000000
+ 9828 multiletter control sequences out of 15000+200000
+ 11044 words of font info for 42 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 42i,21n,28p,1281b,1003s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmb
-x12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb>
-<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Prog
-ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files
-/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX 2
-.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/
-type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
-lic/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
-nts/cm/cmr5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr
-7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C
-:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy5.pfb><C:/Program
- Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on 1dnozzle_project.pdf (5 pages, 183281 bytes).
+ 42i,21n,28p,1281b,407s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Fi
+les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
+/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
+msfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
+m/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pf
+b><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Prog
+ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program File
+s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on 1dnozzle_project.pdf (7 pages, 197850 bytes).
 PDF statistics:
- 187 PDF objects out of 1000 (max. 8388607)
- 48 named destinations out of 1000 (max. 500000)
- 137 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 234 PDF objects out of 1000 (max. 8388607)
+ 67 named destinations out of 1000 (max. 500000)
+ 161 words of extra memory for PDF output out of 10000 (max. 10000000)
 

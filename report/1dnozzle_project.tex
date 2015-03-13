@@ -1,4 +1,4 @@
-\documentclass{article}% insert '[draft]' option to show overfull boxes
+\documentclass[11pt]{article}% insert '[draft]' option to show overfull boxes
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{graphicx}
 \usepackage{epstopdf}
@@ -9,7 +9,7 @@
 
 \newcommand{\BigO}[1]{\ensuremath{\operatorname{O}\bigl(#1\bigr)}}
 \usepackage[left = 1in, right = 1in, top=1in, bottom=1in]{geometry}
-{\setlength{\parindent}{0cm}
+\setlength{\parindent}{0cm}
 \numberwithin{equation}{section}
 
 \title{Unsteady, Pseudo-1D Nozzle Simulations using Riemann Solvers}
@@ -73,6 +73,7 @@ R = \left[ \begin{array}{c |c | c} r^1 & r^2 & r^3 \end{array} \right]= \left[ \
 \end{equation}
 
 \section{Physical Model}
+\subsection{Geometry and Physics}
 The simulation will be modeling flow through a converging-diverging nozzle with geometry given by
 
 \begin{equation}
@@ -92,6 +93,8 @@ M = \frac{u}{c}
 \end{equation} 
 
 The first type of flow results when the pressure ratio, $p_{out} / p_{in}$, is higher than a certain threshold such that the flow is purely subsonic flow, $M < 1$. Flow accelerates through the converging part, but never reaches a sonic speed, or $M = 1$, at the throat of the nozzle. This forces the flow to decelerate through the remaining diverging part of the nozzle such that the flow in the nozzle is entirely subsonic, $M < 1$. The second type of flow is supersonic when the pressure ratio is lower than a certain threshold, where flow accelerates through the converging section and reaches $M = 1$ at the throat. Physics dictates that the flow must now accelerate in the remaining diverging part of the nozzle which results in $M > 1$ at the outlet of the nozzle. These two conditions are a result of the pressure ratios being above a threshold for pure subsonic and below a threshold for supersonic. If the pressure ratio lies in between these thresholds, a shock will form. This type of flow will be considered the choked subsonic flow where the flow reaches sonic at the throat, but a shock appears in the diverging section of the nozzle. The shock exists to raise the pressure of the flow such that it equals the atmospheric pressure at the exit.
+
+The theoretical shock location can be solved using isentropic relations for area and pressure ratios, normal shock relations, and an iterative MATLAB code. The premise of this approach is to guess a shock location, calculate the nozzle area at that location, and then use this in conjunction with appropriate relations to iteratively solve for a location of the shock that will satisfy the inlet and outlet pressures.
 
 \section{Riemann Problem - Euler Equations}
 To solve the Euler equation Riemann problem, the waves are split into the left going and right going waves according to the eigenvalues. This means that if the flow is subsonic then $\lambda^1$ is a left going wave and $\lambda^2$ and $\lambda^3$ are right going waves, while if the flow is supersonic then all waves are right going waves. The coefficients of these eigenvectors, $\alpha$, may be determined by the following which involves taking the inverse of the eigenvector matrix, R.
@@ -236,4 +239,68 @@ Here, $ Q^* $ is the conserved quantity vector after advection, and $ \psi(Q^*) 
 
 \subsection{Supersonic}
 
+\section{Appendix}
+\subsection{Analytical Shock Location}
+
+The theoretical shock location can be solved using isentropic relations, normal shock relations, and an iterative MATLAB code.
+
+\begin{enumerate}
+\item Guessing a shock location, $ x_s $ we can compute the area at the shock location $ A_s $.
+\item 
+Assuming choked flow at the throat, and a known area profile, the cross-sectional area at the throat $ A^* $ and a downstream area at the guessed shock location $ A_s $ are known. From this area ratio, the Mach just upstream of the shock, $ M_1 $ can be calculated using the isentropic area relation:
+\begin{equation} \label{eq:isen}
+\left( \frac{A_s}{A^*}\right)^2=\frac{1}{M_1^2} \left[ \frac{2}{\gamma +1} \left(1+\frac{\gamma-1}{2} M_1^2 \right) \right]^{\frac{\gamma+1}{\gamma-1}}
+\end{equation}
+
+\item Using a normal shock relation, we can calculate the Mach number $ M_2 $ just downstream of the shock:
+\begin{equation}
+M_2^2=\frac{1+\frac{\gamma-1}{2}M_1^2}{\gamma M_1^2-\frac{\gamma-1}{2}}
+\end{equation}
+
+
+\item From $ M_2 $, and $ A_s $, we can calculate a fictitious $ A^*_{exit} $ for some region downstream of the shock, using Eq. \ref{eq:isen}
+
+\item Using Eq. \ref{eq:isen} with $ A^*_{exit} $ and the known area at the exit $ A_{exit} $ , we can calculate the Mach number at the exit, $ M_{exit} $, which should be a subsonic value.
+
+\item We now need to compare the computed ratio of exit pressure to entrance pressure to the given pressure ratio. This is done through a product of pressure ratios, using isentropic and normal shock pressure relations.
+
+In general, for any point in the flow:
+\begin{equation} \label{eq:pt}
+\frac{p_t}{p}=\left(1+\frac{\gamma-1}{2}M^2\right)^{\frac{\gamma}{\gamma-1}}
+\end{equation}
+Additionally, between any two points in a flow, total pressure remains constant, assuming isentropic flow, unless there is a shock, given by:
+\begin{equation}
+p_{1t}=p_{2t}
+\end{equation}
+In the case of a shock, the normal shock relation for two points on either side of the shock is given by:
+
+\begin{equation} \label{eq:shock}
+\frac{p_2}{p_1}=1+\left(\frac{2\gamma}{\gamma+1}(M_1^2-1)\right)
+\end{equation}
+
+We wish to solve for the pressure ratio $ p_{exit}/p_{in}=1.931 $ using the product of pressure ratios:
+
+\begin{equation}
+\frac{p_{exit}}{p_{in}}=
+\underbrace{\frac{p_{exit}}{p_{exit,t}}}_{Eq. \ref{eq:pt}} \underbrace{\frac{p_{exit,t}}{p_{2,t}}}_{1}
+\underbrace{\frac{p_{2,t}}{p_{2}}}_{Eq. \ref{eq:pt}}
+\underbrace{\frac{p_{2}}{p_{1}}}_{Eq. \ref{eq:shock}}
+\underbrace{\frac{p_{1}}{p_{1,t}}}_{Eq. \ref{eq:pt}}
+\underbrace{\frac{p_{1,t}}{p_{in,t}}}_{1}
+\underbrace{\frac{p_{in,t}}{p_{in}}}_{Eq. \ref{eq:pt}}
+\end{equation}
+
+\begin{equation}
+\frac{p_{exit}}{p_{in}}=
+\underbrace{\frac{p_{exit}}{p_{exit,t}}}_{isen} \underbrace{\frac{p_{exit,t}}{p_{2,t}}}_{1}
+\underbrace{\frac{p_{2,t}}{p_{2}}}_{isen}
+\underbrace{\frac{p_{2}}{p_{1}}}_{shock}
+\underbrace{\frac{p_{1}}{p_{1,t}}}_{isen}
+\underbrace{\frac{p_{1,t}}{p_{in,t}}}_{1}
+\underbrace{\frac{p_{in,t}}{p_{in}}}_{isen}
+\end{equation}
+
+In the last pressure ratio $ \frac{p_{in,t}}{p_{in}} $ , $ M_{inlet} $ is set to 0.
+\item If this pressure ratio was larger than the prescribed pressure ratio, the new guess for  $ x_s $ was increased by the MATLAB assignment $ x_s=x_s+0.01 $. Conversely, if the pressure ratio was lower than the pressure ratio, the new guess for  $ x_s $ was decreased by the MATLAB assignment $ x_s=x_s-0.01 $. This process was iterated in a loop until convergence.
+\end{enumerate}
 \end{document}

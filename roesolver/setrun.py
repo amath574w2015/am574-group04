@@ -58,7 +58,7 @@ def setrun(claw_pkg='classic'):
     clawdata.upper[0] = 30.000000e+00          # xupper
     
     # Number of grid cells:
-    clawdata.num_cells[0] = 1000      # mx
+    clawdata.num_cells[0] = 2000      # mx
     
 
     # ---------------
@@ -106,7 +106,11 @@ def setrun(claw_pkg='classic'):
         # Output ntimes frames at equally spaced times up to tfinal:
         # Can specify num_output_times = 0 for no output
         clawdata.num_output_times = 150
+<<<<<<< HEAD
         clawdata.tfinal = 500.000000
+=======
+        clawdata.tfinal = 200.000000
+>>>>>>> f960fa0d2e93a1066a69aba7f07c0e70845e2129
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
     elif clawdata.output_style == 2:
