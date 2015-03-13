@@ -11,6 +11,7 @@ def setplot(plotdata):
 #--------------------------
     import numpy as np
     import math
+    import matplotlib.pyplot as plt
     """ 
     Specify what is to be plotted at each frame.
     Input:  plotdata, an instance of clawpack.visclaw.data.ClawPlotData.
@@ -125,13 +126,20 @@ def setplot(plotdata):
         p = (gamma-1.) * (q[2,:] - 0.5*q[1,:]**2 / q[0,:])
         M = (q[1,:]/q[0,:]) / (gamma*p/q[0,:])**0.5 
         return M
+    
+    def add_shock_location(current_data):
+        from pylab import plot
+        xshock = 17.01
+        plot([xshock, xshock], [0, 2], 'r')  
+	
 
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
     plotitem.plot_var = Mach
     plotitem.plotstyle = '-o'
     plotitem.color = 'b'
-
+    plotaxes.afteraxes = add_shock_location
+ 
     # Parameters used only when creating html and/or latex hardcopy
     # e.g., via clawpack.visclaw.frametools.printframes:
 
