@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.1.11)  13 MAR 2015 15:15
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.1.11)  13 MAR 2015 15:33
 entering extended mode
 **1dnozzle_project.tex
 (C:\Users\Alex\Documents\GitHub\am574-group04\finalreport\1dnozzle_project.tex
@@ -414,13 +414,13 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
-<nozz1.png, id=88, 530.73282pt x 285.31593pt>
+<nozz1.png, id=92, 530.73282pt x 285.31593pt>
 File: nozz1.png Graphic file (type png)
  <use nozz1.png>
 Package pdftex.def Info: nozz1.png used on input line 43.
 (pdftex.def)             Requested size: 284.52756pt x 152.95815pt.
 
-<nozz2.png, id=89, 528.47438pt x 283.0575pt>
+<nozz2.png, id=93, 528.47438pt x 283.0575pt>
 File: nozz2.png Graphic file (type png)
  <use nozz2.png>
 Package pdftex.def Info: nozz2.png used on input line 45.
@@ -432,26 +432,26 @@ Underfull \hbox (badness 10000) in paragraph at lines 204--208
 
  []
 
-[5] [6] <nozz1_099.png, id=146, 722.7pt x 867.24pt>
+[5] [6] <nozz1_099.png, id=150, 722.7pt x 867.24pt>
 File: nozz1_099.png Graphic file (type png)
  <use nozz1_099.png>
 Package pdftex.def Info: nozz1_099.png used on input line 259.
 (pdftex.def)             Requested size: 227.62204pt x 273.14235pt.
 
-<nozz2_099.png, id=148, 722.7pt x 867.24pt>
+<nozz2_099.png, id=152, 722.7pt x 867.24pt>
 File: nozz2_099.png Graphic file (type png)
  <use nozz2_099.png>
 Package pdftex.def Info: nozz2_099.png used on input line 260.
 (pdftex.def)             Requested size: 227.62204pt x 273.14235pt.
  [7 <C:/Users/Alex/Documents/GitHub/am574-group04/finalreport/nozz1_099.png> <C
 :/Users/Alex/Documents/GitHub/am574-group04/finalreport/nozz2_099.png>]
-<nozz1_07.png, id=161, 722.7pt x 867.24pt>
+<nozz1_07.png, id=165, 722.7pt x 867.24pt>
 File: nozz1_07.png Graphic file (type png)
  <use nozz1_07.png>
 Package pdftex.def Info: nozz1_07.png used on input line 270.
 (pdftex.def)             Requested size: 227.62204pt x 273.14235pt.
 
-<nozz2_07.png, id=162, 722.7pt x 867.24pt>
+<nozz2_07.png, id=166, 722.7pt x 867.24pt>
 File: nozz2_07.png Graphic file (type png)
  <use nozz2_07.png>
 Package pdftex.def Info: nozz2_07.png used on input line 271.
@@ -461,19 +461,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 280--284
 
  []
 
-<nozz1_02.png, id=165, 722.7pt x 867.24pt>
+<nozz1_02.png, id=169, 722.7pt x 867.24pt>
 File: nozz1_02.png Graphic file (type png)
  <use nozz1_02.png>
 Package pdftex.def Info: nozz1_02.png used on input line 287.
 (pdftex.def)             Requested size: 154.1093pt x 184.9429pt.
 
-<nozz1_015.png, id=166, 722.7pt x 867.24pt>
+<nozz1_015.png, id=170, 722.7pt x 867.24pt>
 File: nozz1_015.png Graphic file (type png)
  <use nozz1_015.png>
 Package pdftex.def Info: nozz1_015.png used on input line 288.
 (pdftex.def)             Requested size: 154.1093pt x 184.9429pt.
 
-<nozz1_01.png, id=167, 722.7pt x 867.24pt>
+<nozz1_01.png, id=171, 722.7pt x 867.24pt>
 File: nozz1_01.png Graphic file (type png)
  <use nozz1_01.png>
 Package pdftex.def Info: nozz1_01.png used on input line 289.
@@ -482,19 +482,19 @@ Package pdftex.def Info: nozz1_01.png used on input line 289.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<nozz2_045.png, id=168, 722.7pt x 867.24pt>
+<nozz2_045.png, id=172, 722.7pt x 867.24pt>
 File: nozz2_045.png Graphic file (type png)
  <use nozz2_045.png>
 Package pdftex.def Info: nozz2_045.png used on input line 295.
 (pdftex.def)             Requested size: 154.1093pt x 184.9429pt.
 
-<nozz2_04.png, id=169, 722.7pt x 867.24pt>
+<nozz2_04.png, id=173, 722.7pt x 867.24pt>
 File: nozz2_04.png Graphic file (type png)
  <use nozz2_04.png>
 Package pdftex.def Info: nozz2_04.png used on input line 296.
 (pdftex.def)             Requested size: 154.1093pt x 184.9429pt.
 
-<nozz2_035.png, id=170, 722.7pt x 867.24pt>
+<nozz2_035.png, id=174, 722.7pt x 867.24pt>
 File: nozz2_035.png Graphic file (type png)
  <use nozz2_035.png>
 Package pdftex.def Info: nozz2_035.png used on input line 297.
@@ -510,30 +510,30 @@ rs/Alex/Documents/GitHub/am574-group04/finalreport/nozz1_02.png> <C:/Users/Alex
 ents/GitHub/am574-group04/finalreport/nozz1_01.png> <C:/Users/Alex/Documents/Gi
 tHub/am574-group04/finalreport/nozz2_045.png> <C:/Users/Alex/Documents/GitHub/a
 m574-group04/finalreport/nozz2_04.png> <C:/Users/Alex/Documents/GitHub/am574-gr
-oup04/finalreport/nozz2_035.png>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 372.
- [10]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 372.
+oup04/finalreport/nozz2_035.png>] [10]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 375.
+ [11]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 375.
 
 (C:\Users\Alex\Documents\GitHub\am574-group04\finalreport\1dnozzle_project.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 372.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 372.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 375.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 375.
 Package rerunfilecheck Info: File `1dnozzle_project.out' has not changed.
-(rerunfilecheck)             Checksum: 67507BF4FF43AD875375742E48B47A66;1059.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 372.
+(rerunfilecheck)             Checksum: 03F8F4470F676580D296A89193642D22;1106.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 375.
  )
 (\end occurred inside a group at level 1)
 
 ### simple group (level 1) entered at line 12 ({)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 6770 strings out of 493921
- 97772 string characters out of 3147285
+ 6773 strings out of 493921
+ 97799 string characters out of 3147285
  197352 words of memory out of 3000000
- 9880 multiletter control sequences out of 15000+200000
+ 9881 multiletter control sequences out of 15000+200000
  11195 words of font info for 44 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 42i,21n,28p,1343b,1058s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 42i,21n,28p,1343b,1078s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmb
 x12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb>
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Prog
@@ -548,9 +548,9 @@ r5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:
 iles/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiK
 TeX 2.9/fonts/type1/public/amsfonts/cm/cmsy5.pfb><C:/Program Files/MiKTeX 2.9/f
 onts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on 1dnozzle_project.pdf (10 pages, 725881 bytes).
+Output written on 1dnozzle_project.pdf (11 pages, 727400 bytes).
 PDF statistics:
- 294 PDF objects out of 1000 (max. 8388607)
- 87 named destinations out of 1000 (max. 500000)
- 197 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 302 PDF objects out of 1000 (max. 8388607)
+ 89 named destinations out of 1000 (max. 500000)
+ 205 words of extra memory for PDF output out of 10000 (max. 10000000)
 
