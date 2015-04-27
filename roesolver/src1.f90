@@ -27,14 +27,14 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
     do 150 i=1,mx
         xcell = xlower + (i-0.5d0)*dx
         if (abs(xcell-15.d0).le.10.d0) then
-		radius(i)=0.75d0-0.25d0*sin(pi*(xcell-10)/10)
-		darea(i)= -0.15708*pi*cos(pi*(xcell-10)/10) &
-		*(0.75d0-0.25d0*sin(pi*(xcell-10)/10))
-	else
+                radius(i)=0.75d0-0.25d0*sin(pi*(xcell-10)/10)
+                darea(i)= -0.15708*pi*cos(pi*(xcell-10)/10) &
+                     *(0.75d0-0.25d0*sin(pi*(xcell-10)/10))
+        else
             radius(i)=1.d0
             darea(i)=0.0d0
-	    end if        
-	area(i)=pi*radius(i)**2.d0
+        end if        
+        area(i)=pi*radius(i)**2.d0
 
 !        if (abs(xcell-16d0) .le. 8d0) then
 !            radius(i)=1d0-0.4d0 * (1d0+cos(pi*(xcell-16d0)/8d0))

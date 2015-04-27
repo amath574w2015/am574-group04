@@ -6,8 +6,8 @@
 
 1                    =: num_dim             
 0.0                  =: lower               
-26.0                 =: upper               
-2000                 =: num_cells           
+30.0                 =: upper               
+1000                 =: num_cells           
 
 3                    =: num_eqn             
 3                    =: num_waves           
@@ -17,7 +17,7 @@
 
 1                    =: output_style        
 150                  =: num_output_times    
-200.0                =: tfinal              
+500.0                =: tfinal              
 T                    =: output_t0           
 
 1                    =: output_format       
