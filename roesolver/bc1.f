@@ -31,9 +31,8 @@ c     Local Variables
       real(kind=8) patm,uN,pN,cN,rhoN,eN1,e0 
       real(kind=8) uN1,pN1,rhoN1
       real(kind=8) gamma_m,gamma_a,beta
-      real(kind=8) M0,p
 
-      common /cparam/ gamma, po, patm,rho_o 
+      common /cparam/ gamma, p0, patm 
 
 c
 c
@@ -53,14 +52,12 @@ c     cell
 !     Define variables in 1st interior cell
       rho1 = q(1,1)
       u1 = q(2,1)/q(1,1)
-      p1 = gamma_m*(q(3,1)-0.5d0*q(2,1)**2.d0/q(1,1))     
+      p1 = gamma_m*(q(3,1)-0.5d0*u1**2.d0*rho1)     
       c1 = sqrt(gamma*p1/rho1)
-      
+
       do ibc=1,mbc
-!          goto 999
 !         if u is positive, two right going waves
           if(u1.gt.0.0d0) then
-             p0 = po
              u0=u1-2.d0/sqrt(2.d0*gamma*gamma_m)   
      &          *c1*(1.d0-p0/p1)/sqrt(1.d0+beta*p0/p1)
              rho0 = (1.d0+beta*p0/p1)/(p0/p1+beta)*rho1 
@@ -71,7 +68,6 @@ c     cell
              q(3,1-ibc) = e0
 !         if u is negative, one right going wave
           else 
-             p0 = po
              rho0 = rho1
              u0 = u1
              e0 = p0/gamma_m+0.5d0*u0**2.d0*rho0
@@ -80,20 +76,6 @@ c     cell
              q(2,1-ibc) = rho0*u0
              q(3,1-ibc) = e0
           endif
-!         Supersonic inflow conditions
-999       continue
-
-!          M0 = 3.0d0
-
-!          rho0=rho_o*(1.d0+gamma_m/2.d0*M0**2.d0)**(-1.d0/gamma_m)
-!          p0=po*(1.d0+gamma_m/2.d0*M0**2.d0)**(-gamma/gamma_m)
-!          u0 = M0*sqrt(gamma*p0/rho0)
-!          e0 = p0/gamma_m+0.5d0*u0**2.d0*rho0         
-
-!          q(1,1-ibc) = rho0
-!          q(2,1-ibc) = rho0*u0
-!          q(3,1-ibc) = e0
-
       enddo
       go to 199
 c
@@ -165,7 +147,7 @@ c       subsonic outflow
              q(3,mx+ibc)=eN1
 
 !          velocity negative, two left going waves
-            else
+           else
              rhoN1 = (1.d0+beta*patm/pN)/(patm/pN+beta)*
      &          rhoN
              uN1 = uN+2.d0/sqrt(2.d0*gamma*
@@ -177,8 +159,8 @@ c       subsonic outflow
              q(2,mx+ibc) = rhoN1*uN1
              q(3,mx+ibc) = eN1
            endif
-!       supersonic outflow, just extrapolate
-        elseif(abs(uN).ge.cN) then
+c       supersonic outflow, just extrapolate
+        else
            do m=1,meqn
               q(m,mx+ibc)=q(m,mx)
            enddo

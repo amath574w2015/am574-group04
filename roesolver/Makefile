@@ -36,21 +36,19 @@ MODULES = \
 SOURCES = \
   setprob.f \
   qinit.f \
-  def_area.f90 \
-  def_darea.f90 \
-  rp1_euler_with_efix.f90 \
+  $(CLAW)/riemann/src/rp1_euler_with_efix.f90 \
   $(CLAW)/classic/src/1d/setaux.f90 \
   bc1.f \
   $(CLAW)/classic/src/1d/b4step1.f90 \
   $(CLAW)/classic/src/1d/driver.f90 \
   $(CLAW)/classic/src/1d/claw1ez.f \
-  claw1.f \
+  $(CLAW)/classic/src/1d/claw1.f \
   $(CLAW)/classic/src/1d/copyq1.f \
   $(CLAW)/classic/src/1d/inlinelimiter.f90 \
   $(CLAW)/classic/src/1d/opendatafile.f \
-  out1.f \
+  $(CLAW)/classic/src/1d/out1.f \
   src1.f90 \
-  step1.f90\
+  $(CLAW)/classic/src/1d/step1.f90\
 
 #-------------------------------------------------------------------
 # Include Makefile containing standard definitions and make options:

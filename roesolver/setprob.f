@@ -12,7 +12,7 @@ c
       gamma = 1.4d0
       po=4.0d0
       rho_o=1.0d0
-      patm=po*0.9d0
+      patm=po*0.1d0
       
                 
 

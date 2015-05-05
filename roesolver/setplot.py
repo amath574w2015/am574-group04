@@ -1,10 +1,141 @@
-""" 
+u""" 
 Set up the plot figures, axes, and items to be done for each frame.
 
 This module is imported by the plotting routines and then the
 function setplot is called to set the plot parameters.
     
-""" 
+"""
+import numpy as np
+import math
+import matplotlib.pyplot as plt
+
+def ArMach(M,x):
+	g = 1.40
+	g_m = g - 1.0
+	g_a = g + 1.0
+	radius = 0.750-0.250*math.sin(math.pi*(x-10)/10)
+	area = radius**2.0*math.pi
+	at = (0.750-0.250)**2.0*math.pi
+	return area/at - (g_a/2.0)**(-g_a/(2.0*g_m))* (1.0 + g_m/2.0*M**2.0)**(g_a/(2.0*g_m))/M
+
+
+def analtMach():
+	from pylab import plot
+	import scipy.optimize
+	import numpy as np
+	x = np.linspace(0.0,30.0,num=50)
+	M = []
+	for i in range(len(x)):
+	   if(x[i] < 15.0): 
+	       Mlow = 0.01
+	       Mhigh = 1.0
+	   else:
+	       Mlow = 1.0
+	       Mhigh = 4.0
+	   if x[i] < 5.0:
+	       xx = 5.0
+	   elif x[i] > 25.0:
+	       xx = 25.0
+	   else:
+	       xx = x[i]
+	   M.append(scipy.optimize.brentq(ArMach, Mlow, Mhigh, args=(xx)))
+	plt.hold(True)
+	plot(x,M, 'r',linewidth='2')
+
+def analtrho(current_data):
+	from pylab import plot
+	import scipy.optimize
+	import numpy as np
+	q = current_data.q
+	x = np.linspace(0.0,30.0,num=50)
+	M = []
+	rho = []
+	g = 1.4
+	g_m = g - 1.0
+	g_a = g + 1.0
+	for i in range(len(x)):
+	   if(x[i] < 15.0):
+	       Mlow = 0.01
+	       Mhigh = 1.0
+	   else:
+	       Mlow = 1.0
+	       Mhigh = 4.0
+	   if x[i] < 5.0:
+	       xx = 5.0
+	   elif x[i] > 25.0:
+	       xx = 25.0
+	   else:
+	       xx = x[i]
+
+	   M.append(scipy.optimize.brentq(ArMach, Mlow, Mhigh, args=(xx)))
+	   rho.append(q[0,0]*(1.0+g_m/2.0*M[i]**2.0)**(-1/g_m))
+	plot(x,rho, 'r',linewidth='2')
+
+
+def analtp(current_data):
+	from pylab import plot
+	import scipy.optimize
+	import numpy as np
+	q = current_data.q
+	x = np.linspace(0.0,30.0,num=50)
+	M = []
+	p = []
+	g = 1.4
+	g_m = g - 1.0
+	g_a = g + 1.0 
+	pt = (g_m) * (q[2,0] - 0.5*q[1,0]**2/ q[0,0])
+	for i in range(len(x)):
+	   if(x[i] < 15.0):
+	       Mlow = 0.01
+	       Mhigh = 1.0
+	   else:
+	       Mlow = 1.0
+	       Mhigh = 4.0
+	   if x[i] < 5.0:
+	       xx = 5.0
+	   elif x[i] > 25.0:
+	       xx = 25.0
+	   else: 
+	       xx = x[i]
+	   M.append(scipy.optimize.brentq(ArMach, Mlow, Mhigh, args=(xx)))
+	   p.append(pt*(1.0+g_m/2.0*M[i]**2.0)**(-g/g_m))
+	plot(x,p,'r',linewidth='2')
+
+
+def analtvel(current_data):
+	from pylab import plot
+	import scipy.optimize
+	import numpy as np
+	q = current_data.q
+	x = np.linspace(0.0,30.0,num=50)
+	M = []
+	p = []
+	rho = []
+	u = []
+	g = 1.4
+	g_m = g - 1.0
+	g_a = g + 1.0
+	pt = (g_m) * (q[2,0] - 0.5*q[1,0]**2/ q[0,0])
+	for i in range(len(x)):
+	   if(x[i] < 15.0):
+	       Mlow = 0.01
+	       Mhigh = 1.0
+	   else:
+	       Mlow = 1.0
+	       Mhigh = 4.0
+	   if x[i] < 5.0:
+	       xx = 5.0
+	   elif x[i] > 25.0:
+	       xx = 25.0
+	   else:
+	       xx = x[i]
+	   M.append(scipy.optimize.brentq(ArMach, Mlow, Mhigh, args=(xx)))
+	   p.append(pt*(1.0+g_m/2.0*M[i]**2.0)**(-g/g_m))
+	   rho.append(q[0,0]*(1.0+g_m/2.0*M[i]**2.0)**(-1/g_m))
+	   u.append(M[i]*math.sqrt(g*p[i]/rho[i]))
+	plot(x,u,'r',linewidth='2')
+
+ 
 
 #--------------------------
 def setplot(plotdata):
@@ -38,196 +169,8 @@ def setplot(plotdata):
 	density = q[0,:]/area[:] 
         return density
 
-
-    def ArMach(M,x):
-        g = 1.40
-        g_m = g - 1.0
-        g_a = g + 1.0
-        radius = 0.750-0.250*math.sin(math.pi*(x-10)/10)
-        area = radius**2.0*math.pi
-        at = (0.750-0.250)**2.0*math.pi
-	return area/at - (g_a/2.0)**(-g_a/(2.0*g_m))* (1.0 + g_m/2.0*M**2.0)**(g_a/(2.0*g_m))/M
-
-    
-    def analtMach(current_data):
-        from pylab import plot
-        import scipy.optimize
-	import numpy as np
-        q = current_data.q
-        x = np.linspace(0.0,30.0,num=50)
-        M = []
-        for i in range(len(x)):
-           if(x[i] < 15.0): 
-               Mlow = 0.01
-               Mhigh = 1.0
-           else:
-               Mlow = 1.0
-               Mhigh = 4.0
-           if x[i] < 5.0:
-               xx = 5.0
-           elif x[i] > 25.0:
-               xx = 25.0
-           else:
-               xx = x[i]
-           M.append(scipy.optimize.brentq(ArMach, Mlow, Mhigh, args=(xx)))
-
-	
-        plt.hold(True)
-        plot(x,M, 'r',linewidth='2')
-
-    def analtrho(current_data):
-        from pylab import plot
-        import scipy.optimize
-        import numpy as np
-        q = current_data.q
-        x = np.linspace(0.0,30.0,num=50)
-        M = []
-        rho = []
-        g = 1.4
-        g_m = g - 1.0
-        g_a = g + 1.0
-        for i in range(len(x)):
-           if(x[i] < 15.0):
-               Mlow = 0.01
-               Mhigh = 1.0
-           else:
-               Mlow = 1.0
-               Mhigh = 4.0
-           if x[i] < 5.0:
-               xx = 5.0
-           elif x[i] > 25.0:
-               xx = 25.0
-           else:
-               xx = x[i]
-
-           M.append(scipy.optimize.brentq(ArMach, Mlow, Mhigh, args=(xx)))
-           rho.append(q[0,0]*(1.0+g_m/2.0*M[i]**2.0)**(-1/g_m))
-        plot(x,rho, 'r',linewidth='2')
-
-
-    def analtp(current_data):
-        from pylab import plot
-        import scipy.optimize
-        import numpy as np
-        q = current_data.q
-        x = np.linspace(0.0,30.0,num=50)
-        M = []
-        p = []
-        g = 1.4
-        g_m = g - 1.0
-        g_a = g + 1.0 
-        pt = (g_m) * (q[2,0] - 0.5*q[1,0]**2/ q[0,0])
-        for i in range(len(x)):
-           if(x[i] < 15.0):
-               Mlow = 0.01
-               Mhigh = 1.0
-           else:
-               Mlow = 1.0
-               Mhigh = 4.0
-           if x[i] < 5.0:
-               xx = 5.0
-           elif x[i] > 25.0:
-               xx = 25.0
-           else: 
-               xx = x[i]
-           M.append(scipy.optimize.brentq(ArMach, Mlow, Mhigh, args=(xx)))
-           p.append(pt*(1.0+g_m/2.0*M[i]**2.0)**(-g/g_m))
-
-        plot(x,p,'r',linewidth='2')
-
-
-    def analtvel(current_data):
-        from pylab import plot
-        import scipy.optimize
-        import numpy as np
-        q = current_data.q
-        x = np.linspace(0.0,30.0,num=50)
-        M = []
-        p = []
-        rho = []
-        u = []
-        g = 1.4
-        g_m = g - 1.0
-        g_a = g + 1.0
-        pt = (g_m) * (q[2,0] - 0.5*q[1,0]**2/ q[0,0])
-        for i in range(len(x)):
-           if(x[i] < 15.0):
-               Mlow = 0.01
-               Mhigh = 1.0
-           else:
-               Mlow = 1.0
-               Mhigh = 4.0
-           if x[i] < 5.0:
-               xx = 5.0
-           elif x[i] > 25.0:
-               xx = 25.0
-           else:
-               xx = x[i]
-
-           M.append(scipy.optimize.brentq(ArMach, Mlow, Mhigh, args=(xx)))
-           p.append(pt*(1.0+g_m/2.0*M[i]**2.0)**(-g/g_m))
-           rho.append(q[0,0]*(1.0+g_m/2.0*M[i]**2.0)**(-1/g_m))
-           u.append(M[i]*math.sqrt(g*p[i]/rho[i]))
-
-        plot(x,u,'r',linewidth='2')
-
-
-    plotdata.clearfigures()  # clear any old figures,axes,items data
-
-    def Rsteady(current_data):
-       import scipy.integrate 
-       from pylab import plot
-       import scipy.optimize
-       import numpy as np
-
-       x1 = np.linspace(5.0,15.0,num=50)
-   
-       def dR(R,x):
-          gamma = 1.4
-          A = math.pi*(0.75-0.25*math.sin(math.pi*(x-10)/10))**2.0
-          dA = -0.15708*math.pi*math.cos(math.pi*(x-10)/10)*(0.75 \
-               - 0.25*math.sin(math.pi*(x-10)/10)) 
-          m = math.pi*0.342369
-          K = 4.0/1.0**1.4
-          return(dA*m**2.0/A**2.0/R*(K*A*gamma*R**(gamma-1.0) - m**2.0/A/R**2.0)**-1.0)
-       gamma = 1.4
-       x = np.linspace(15.0,25.0,num=50) 
-      
-       R0 = (1.0+(gamma-1.0)/2.0)**(-1.0/(gamma-1.0))
-       R1 = scipy.integrate.odeint(dR,1.0,x1)
-       R = scipy.integrate.odeint(dR,R0,x)
-
-       q = current_data.q
-       x2 = np.linspace(0.0,30.0,num=50)
-       M = []
-       rho = []
-       g = 1.4
-       g_m = g - 1.0
-       g_a = g + 1.0
-       for i in range(len(x)):
-          if(x2[i] < 15.0):
-              Mlow = 0.01
-              Mhigh = 1.0
-          else:
-              Mlow = 1.0
-              Mhigh = 4.0
-          if x2[i] < 5.0:
-              xx = 5.0
-          elif x2[i] > 25.0:
-              xx = 25.0
-          else:
-              xx = x2[i]
-
-          M.append(scipy.optimize.brentq(ArMach, Mlow, Mhigh, args=(xx)))
-          rho.append(q[0,0]*(1.0+g_m/2.0*M[i]**2.0)**(-1/g_m))
-
-       plt.hold(True)
-       plot(x2,rho, 'r',linewidth='2')
-       plot(x1,R1,'c',linewidth='2')
-       plot(x,R,'c',linewidth='2')  
       
        
-
     # Figure for q[0]
     plotfigure = plotdata.new_plotfigure(name='Density, Momentum, and Energy', figno=1)
     plotfigure.kwargs = {'figsize':(10,12)}
@@ -244,8 +187,8 @@ def setplot(plotdata):
     plotitem.plot_var = 0  
     plotitem.plotstyle = '-o'
     plotitem.color = 'b'
-#    plotaxes.afteraxes = analtrho
-    plotaxes.afteraxes = Rsteady
+    plotaxes.afteraxes = analtrho
+
 
     # Figure for q[1]
     def vel(current_data):
@@ -266,7 +209,7 @@ def setplot(plotdata):
     plotitem.plot_var = vel
     plotitem.plotstyle = '-o'
     plotitem.color = 'b'
-#    plotaxes.afteraxes = analtvel
+    plotaxes.afteraxes = analtvel
 
     # Figure for q[2]
 

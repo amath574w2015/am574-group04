@@ -76,7 +76,7 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
 !      Calculate Q** based on the psi*
        Qstarstar(1)=q(1,i)+ (dt/2) * psistar(1)
        Qstarstar(2)=q(2,i)+ (dt/2) * psistar(2)
-       Qstarstar(3)=q(2,i)+ (dt/2) * psistar(3)
+       Qstarstar(3)=q(3,i)+ (dt/2) * psistar(3)
 
        pressstarstar = (gamma-1.d0)*(Qstarstar(3)-0.5d0*Qstarstar(2)**2.d0 &
               /Qstarstar(1))
@@ -89,9 +89,9 @@ subroutine src1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt)
         * (Qstarstar(2)/Qstarstar(1))*(Qstarstar(3)+pressstarstar)
 
 !      Calculate the updated Q based on psi**
-       q(1,i)=q(1,i)+ dt * psistarstar(1) !* darea(i)
-       q(2,i)=q(2,i)+ dt * psistarstar(2) !* darea(i)
-       q(3,i)=q(3,i)+ dt * psistarstar(3) !* darea(i)
+       q(1,i)=q(1,i)+ dt * psistarstar(1) 
+       q(2,i)=q(2,i)+ dt * psistarstar(2) 
+       q(3,i)=q(3,i)+ dt * psistarstar(3) 
     20 end do
 
 end subroutine src1
