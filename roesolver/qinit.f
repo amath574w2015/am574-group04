@@ -73,12 +73,12 @@ c
          c(i)=sqrt(p/rho*gamma)
          u=M*c(i)
    
-!         rho = rho_o
-!         u = 0.1d0
+         rho = rho_o
+         u = 0.1d0
 
          q(1,i) = rho   ! density
          q(2,i) = rho*u ! momentum
-!         p = po - (po - patm)/((mx-0.5d0)*dx)*xcell
+         p = po - (po - patm)/((mx-0.5d0)*dx)*xcell
          q(3,i) = (p/(gamma-1.d0) + 0.5d0*u**2.d0*rho) !energy
   150    continue
 c
