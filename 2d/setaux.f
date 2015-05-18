@@ -3,25 +3,27 @@ c     ============================================
 c     ============================================
 c
 c
-c     #    aux(i,j,1)  = ax
-c     #    aux(i,j,2)  = ay   where (ax,ay) is unit normal to left face
-c     #    aux(i,j,3)  = ratio of length of left face to dyc
+c     #    aux(1,i,j)  = ax
+c     #    aux(2,i,j)  = ay   where (ax,ay) is unit normal to left face
+c     #    aux(3,i,j)  = ratio of length of left face to dyc
 c
-c     #    aux(i,j,4)  = bx
-c     #    aux(i,j,5)  = by   where (bx,by) is unit normal to bottom face
-c     #    aux(i,j,6)  = ratio of length of bottom face to dxc
+c     #    aux(4,i,j)  = bx
+c     #    aux(5,i,j)  = by   where (bx,by) is unit normal to bottom face
+c     #    aux(6,i,j)  = ratio of length of bottom face to dxc
 c
-c     #    aux(i,j,7)  = ratio of cell area to dxc*dyc
+c     #    aux(7,i,j)  = ratio of cell area to dxc*dyc
 c     #                  (approximately Jacobian of mapping function)
 c
 c     
       implicit double precision (a-h,o-z)
-      dimension aux(1-mbc:mx+mbc,1-mbc:my+mbc, 7)
+      dimension aux(7,1-mbc:mx+mbc,1-mbc:my+mbc)
       dimension xccorn(5),yccorn(5),xpcorn(5),ypcorn(5)
-c
+      integer i,j,k
+c  
 
       dx2 = dxc/2.d0
       dy2 = dyc/2.d0
+
 c
       do 20 j=1-mbc,my+mbc
          do 20 i=1-mbc,mx+mbc
@@ -54,16 +56,16 @@ c
 	    ax =  (ypcorn(2) - ypcorn(1))
 	    ay = -(xpcorn(2) - xpcorn(1))
             anorm = dsqrt(ax*ax + ay*ay)
-	    aux(i,j,1) = ax/anorm
-	    aux(i,j,2) = ay/anorm
-	    aux(i,j,3) = anorm/dyc
+	    aux(1,i,j) = ax/anorm
+	    aux(2,i,j) = ay/anorm
+	    aux(3,i,j) = anorm/dyc
 c
 	    bx = -(ypcorn(4) - ypcorn(1))
 	    by =  (xpcorn(4) - xpcorn(1))
             bnorm = dsqrt(bx*bx + by*by)
-	    aux(i,j,4) = bx/bnorm
-	    aux(i,j,5) = by/bnorm
-	    aux(i,j,6) = bnorm/dxc
+	    aux(4,i,j) = bx/bnorm
+	    aux(5,i,j) = by/bnorm
+	    aux(6,i,j) = bnorm/dxc
 c
 c           # compute area of physical cell from four corners:
             
@@ -74,9 +76,14 @@ c           # compute area of physical cell from four corners:
 	    do ic=1,4
 	      area = area + 0.5d0 * (ypcorn(ic)+ypcorn(ic+1)) *
      &               (xpcorn(ic+1)-xpcorn(ic))
-	      enddo
-	    aux(i,j,7) = area / (dxc*dyc)
+	    enddo
+	    aux(7,i,j) = area / (dxc*dyc)
 c
+            do k = 1,7
+               if(aux(k,i,j)/=aux(k,i,j)) then 
+                   write(*,*) 'aux(',k,') NaN'
+               endif
+            enddo 
    20       continue
 c
        return
