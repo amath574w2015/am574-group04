@@ -171,10 +171,13 @@ def setrun(claw_pkg='classic'):
     # ------------------
 
     # Order of accuracy:  1 => Godunov,  2 => Lax-Wendroff plus limiters
-    clawdata.order = 2
+    clawdata.order = 1
     
     # Use dimensional splitting? (not yet available for AMR)
-    clawdata.dimensional_split = 'unsplit'
+    # Godunov splitting = 1
+    # Strang splitting = 2
+
+    clawdata.dimensional_split = 1 #'unsplit'
     
     # For unsplit method, transverse_waves can be 
     #  0 or 'none'      ==> donor cell (only normal solver used)
@@ -219,7 +222,7 @@ def setrun(claw_pkg='classic'):
     #   3 or 'wall'     => solid wall for systems where q(2) is normal velocity
     
     clawdata.bc_lower[0] = 1   # at xlower
-    clawdata.bc_upper[0] = 'extrap'   # at xupper
+    clawdata.bc_upper[0] = 1   # at xupper
 
     clawdata.bc_lower[1] = 'wall'   # at ylower
     clawdata.bc_upper[1] = 'wall'   # at yupper

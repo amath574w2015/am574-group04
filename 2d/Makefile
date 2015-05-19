@@ -12,6 +12,7 @@ CLAWMAKE = $(CLAW)/clawutil/src/Makefile.common
 # Adjust these variables if desired:
 # ----------------------------------
 
+FC ?= gfortran
 CLAW_PKG = classic                  # Clawpack package to use
 EXE = xclaw                         # Executable to create
 SETRUN_FILE = setrun.py             # File containing function to make data
@@ -25,7 +26,7 @@ RESTART ?= False                    # Should = clawdata.restart in setrun
 # Environment variable FC should be set to fortran compiler, e.g. gfortran
 
 # Compiler flags can be specified here or set as an environment variable
-FFLAGS ?=  
+FFLAGS ?= -g -Wall -pedantic -fbounds-check -ffpe-trap=invalid,overflow,zero 
 
 # ---------------------------------
 # List of sources for this program:
@@ -37,7 +38,7 @@ SOURCES = \
   mapc2p.f \
   qinit.f \
   setaux.f \
-  rpn2euq3.f \
+  rpn2euq3.f90 \
   rpt2euq.f \
   setprob.f \
   $(CLAW)/classic/src/2d/driver.f90 \

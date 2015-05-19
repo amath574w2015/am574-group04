@@ -35,7 +35,7 @@ c
       dimension alf(-1:maxm2)
       dimension beta(-1:maxm2)
       dimension wave(meqn, mwaves,-1:maxm2)
-      dimension    s(3,-1:maxm2)
+      dimension    s(mwaves,-1:maxm2)
       common /param/ gamma, gamma1
 c
       if (-1.gt.1-mbc .or. maxm2 .lt. maxm+mbc) then
@@ -212,23 +212,23 @@ c
 c
 c        # Compute the waves.
 
-         wave(i,1,1) = a1
-         wave(i,2,1) = a1*(u(i)-a(i)) 
-         wave(i,3,1) = a1*v(i)
-         wave(i,4,1) = a1*(enth(i) - u(i)*a(i))
-         s(i,1) = (u(i)-a(i))
+         wave(1,1,i) = a1
+         wave(2,1,i) = a1*(u(i)-a(i)) 
+         wave(3,1,i) = a1*v(i)
+         wave(4,1,i) = a1*(enth(i) - u(i)*a(i))
+         s(1,i) = (u(i)-a(i))
 c
-         wave(i,1,2) = a3
-         wave(i,2,2) = a3*u(i)
-         wave(i,3,2) = a3*v(i) + a2
-         wave(i,4,2) = a3*0.5d0*u2v2(i)  + a2*v(i)
-         s(i,2) = u(i)
+         wave(1,2,i) = a3
+         wave(2,2,i) = a3*u(i)
+         wave(3,2,i) = a3*v(i) + a2
+         wave(4,2,i) = a3*0.5d0*u2v2(i)  + a2*v(i)
+         s(2,i) = u(i)
 c
-         wave(i,1,3) = a4
-         wave(i,2,3) = a4*(u(i)+a(i))
-         wave(i,3,3) = a4*v(i)
-         wave(i,4,3) = a4*(enth(i)+u(i)*a(i))
-         s(i,3) = (u(i)+a(i)) 
+         wave(1,3,i) = a4
+         wave(2,3,i) = a4*(u(i)+a(i))
+         wave(3,3,i) = a4*v(i)
+         wave(4,3,i) = a4*(enth(i)+u(i)*a(i))
+         s(3,i) = (u(i)+a(i)) 
 c
    80    continue
 c
@@ -249,8 +249,8 @@ c     # rotate momentum components:
       do 150 i=ix1,ixm1
 	 bmasdq2 = alf(i)*bmasdq(2,i) - beta(i)*bmasdq(3,i)
 	 bmasdq3 = beta(i)*bmasdq(2,i) + alf(i)*bmasdq(3,i)
-	 bmasdq(i,2) = bmasdq2
-	 bmasdq(i,3) = bmasdq3
+	 bmasdq(2,i) = bmasdq2
+	 bmasdq(3,i) = bmasdq3
   150    continue
 c
 c

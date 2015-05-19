@@ -9,7 +9,7 @@ c
       dimension q(meqn, 1-mbc:mx+mbc, 1-mbc:my+mbc)
       dimension aux(maux, 1-mbc:mx+mbc, 1-mbc:my+mbc)
       real(kind=8) :: at,gamma,gamma_m,gamma_a
-      real(kind=8) :: area(1:mx)
+      real(kind=8) :: area(1-mbc:mx+mbc)
       real(kind=8) :: c(1-mbc:mx+mbc)
       real(kind=8) :: radius,rho,u
       real(kind=8) :: pi,patm,xc,yc,p
@@ -23,7 +23,7 @@ c
       gamma_a = gamma + 1.d0
       tol=1.d-7
 
-      do i=1,mx
+      do i=1-mbc,mx+mbc
         xc = xlower + (i-0.5d0)*dx
         if (abs(xc-15.d0).le.10.d0) then
            radius=0.75d0-0.25d0*sin(pi*(xc-10)/10)
@@ -73,9 +73,9 @@ c
             c(i)=sqrt(p/rho*gamma)
             u=M*c(i)
 
-!            rho = rho_o
-!            u = 0.1d0
-!            p = po - (po - patm)/((mx-0.5d0)*dx)*xcell
+            rho = rho_o
+            u = 0.1d0
+            p = po - (po - patm)/((mx-0.5d0)*dx)*xcell
 
 
 !           Now set the conserved variables
