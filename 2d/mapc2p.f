@@ -17,6 +17,6 @@ C      rad1 = 1.d0 - 0.3d0*(1.d0 + cos(pi*(xc-16.d0)/8.d0))
            radius = 1.00d0
         endif
       xp = xc
-      yp = yc * radius
+      yp = yc !* radius
       return
       end

@@ -27,7 +27,7 @@ c
       dimension   aux2(meqn,1-mbc:maxm+mbc)
       dimension   aux3(meqn,1-mbc:maxm+mbc)
 c
-      parameter (maxm2 = 1002)  !# assumes at most 1000x1000 grid with mbc=2
+      parameter (maxm2 = 2002)  !# assumes at most 1000x1000 grid with mbc=2
       dimension delta(4)
       dimension u2v2(-1:maxm2),
      &       u(-1:maxm2),v(-1:maxm2),enth(-1:maxm2),a(-1:maxm2),
@@ -76,6 +76,7 @@ c       # determine rotation matrix for interface above cell, using aux3
 c               [ alf  beta ]
 c               [-beta  alf ]
 c
+
         do i=ix1,ixm1
 c
          if (imp.eq.1) then
@@ -86,10 +87,14 @@ c
 c
            alf(i) = aux3(inx,i1)
            beta(i) = aux3(iny,i1)
-	   pres = gamma1*(ql(4,i1)  - 0.5d0*(ql(2,i1)**2 +
-     &            ql(3,i1)**2)/ql(1,i1))
+
+!	   pres = gamma1*(ql(4,i1)  - 0.5d0*(ql(2,i1)**2 +
+!     &            ql(3,i1)**2)/ql(1,i1))
            u(i) = (alf(i)*ql(2,i1) + beta(i)*ql(3,i1)) / ql(1,i1)
            v(i) = (-beta(i)*ql(2,i1) + alf(i)*ql(3,i1)) / ql(1,i1)
+           pres = gamma1*(ql(4,i1)  - 0.5d0*(u(i1)**2 +
+     &            v(i1)**2)*ql(1,i1))
+
 	   enth(i) = (ql(4,i1)+pres) / ql(1,i1)
 	   u2v2(i) = u(i)**2 + v(i)**2
            a2 = gamma1*(enth(i) - .5d0*u2v2(i))
@@ -116,23 +121,23 @@ c
 c
 c        # Compute the waves.
 c
-         wave(i,1,1) = a1
-         wave(i,2,1) = a1*(u(i)-a(i)) 
-         wave(i,3,1) = a1*v(i)
-         wave(i,4,1) = a1*(enth(i) - u(i)*a(i))
-         s(i,1) = (u(i)-a(i))
+         wave(1,1,i) = a1
+         wave(2,1,i) = a1*(u(i)-a(i)) 
+         wave(3,1,i) = a1*v(i)
+         wave(4,1,i) = a1*(enth(i) - u(i)*a(i))
+         s(1,i) = (u(i)-a(i))
 c
-         wave(i,1,2) = a3
-         wave(i,2,2) = a3*u(i)
-         wave(i,3,2) = a3*v(i) + a2
-         wave(i,4,2) = a3*0.5d0*u2v2(i)  + a2*v(i)
-         s(i,2) = u(i)
+         wave(1,2,i) = a3
+         wave(2,2,i) = a3*u(i)
+         wave(3,2,i) = a3*v(i) + a2
+         wave(4,2,i) = a3*0.5d0*u2v2(i)  + a2*v(i)
+         s(2,i) = u(i)
 c
-         wave(i,1,3) = a4
-         wave(i,2,3) = a4*(u(i)+a(i))
-         wave(i,3,3) = a4*v(i)
-         wave(i,4,3) = a4*(enth(i)+u(i)*a(i))
-         s(i,3) = (u(i)+a(i)) 
+         wave(1,3,i) = a4
+         wave(2,3,i) = a4*(u(i)+a(i))
+         wave(3,3,i) = a4*v(i)
+         wave(4,3,i) = a4*(enth(i)+u(i)*a(i))
+         s(3,i) = (u(i)+a(i)) 
 
    20    continue
 c

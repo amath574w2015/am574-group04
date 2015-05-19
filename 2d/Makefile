@@ -37,7 +37,7 @@ SOURCES = \
   mapc2p.f \
   qinit.f \
   setaux.f \
-  rpn2euq3.f90 \
+  rpn2euq3.f \
   rpt2euq.f \
   setprob.f \
   $(CLAW)/classic/src/2d/driver.f90 \
