@@ -44,7 +44,7 @@ SOURCES = \
   $(CLAW)/classic/src/2d/driver.f90 \
   $(CLAW)/classic/src/2d/claw2ez.f \
   $(CLAW)/classic/src/2d/claw2.f \
-  $(CLAW)/classic/src/2d/bc2.f \
+  bc2.f \
   $(CLAW)/classic/src/2d/b4step2.f90 \
   $(CLAW)/classic/src/2d/step2.f90 \
   $(CLAW)/classic/src/2d/step2ds.f90 \

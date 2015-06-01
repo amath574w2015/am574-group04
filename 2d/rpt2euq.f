@@ -23,9 +23,9 @@ c
       dimension   asdq(meqn,1-mbc:maxm+mbc)
       dimension bmasdq(meqn,1-mbc:maxm+mbc)
       dimension bpasdq(meqn,1-mbc:maxm+mbc)
-      dimension   aux1(meqn,1-mbc:maxm+mbc)
-      dimension   aux2(meqn,1-mbc:maxm+mbc)
-      dimension   aux3(meqn,1-mbc:maxm+mbc)
+      dimension   aux1(maux,1-mbc:maxm+mbc)
+      dimension   aux2(maux,1-mbc:maxm+mbc)
+      dimension   aux3(maux,1-mbc:maxm+mbc)
 c
       parameter (maxm2 = 2002)  !# assumes at most 1000x1000 grid with mbc=2
       dimension delta(4)
@@ -36,7 +36,7 @@ c
       dimension beta(-1:maxm2)
       dimension wave(meqn, mwaves,-1:maxm2)
       dimension    s(mwaves,-1:maxm2)
-      common /param/ gamma, gamma1
+      common /cparam/ gamma, gamma1
 c
       if (-1.gt.1-mbc .or. maxm2 .lt. maxm+mbc) then
          write(6,*) 'need to increase maxm2 in rpt2'
@@ -44,6 +44,7 @@ c
       endif
 c
 c
+ 
       if (ixy.eq.1) then
           inx = 4
           iny = 5
@@ -60,11 +61,11 @@ c
          if (imp.eq.1) then
 c            # asdq = amdq, moving to left
              ix1 = 2-mbc
-	     ixm1 = mx+mbc
+             ixm1 = mx+mbc
            else
 c            # asdq = apdq, moving to right
              ix1 = 1-mbc
-	     ixm1 = mx+mbc
+             ixm1 = mx+mbc
            endif
 c
 c        --------------
@@ -95,12 +96,14 @@ c
            pres = gamma1*(ql(4,i1)  - 0.5d0*(u(i1)**2 +
      &            v(i1)**2)*ql(1,i1))
 
-	   enth(i) = (ql(4,i1)+pres) / ql(1,i1)
-	   u2v2(i) = u(i)**2 + v(i)**2
+           enth(i) = (ql(4,i1)+pres) / ql(1,i1)
+           u2v2(i) = u(i)**2 + v(i)**2
            a2 = gamma1*(enth(i) - .5d0*u2v2(i))
+           if(a2<=0.0) write(*,*) 'enth = ',enth(i),'u2v2 = ',u2v2(i)
+           if(a2<=0.0) write(*,*) 'press = ',pres,'i = ',i
            a(i) = dsqrt(a2)
-	   g1a2(i) = gamma1 / a2
-	   euv(i) = enth(i) - u2v2(i) 
+           g1a2(i) = gamma1 / a2
+           euv(i) = enth(i) - u2v2(i) 
            enddo
 c
 c
@@ -147,19 +150,19 @@ c    --------------------------------
 c
       do 40 m=1,meqn
          do 40 i=ix1,ixm1
-	    bpasdq(i,m) = 0.d0
-	    do 30 mw=1,mwaves
-	       bpasdq(m,i) = bpasdq(m,i) + dmax1(s(mw,i),0.d0)
+            bpasdq(m,i) = 0.d0
+            do 30 mw=1,mwaves
+               bpasdq(m,i) = bpasdq(m,i) + dmax1(s(mw,i),0.d0)
      &                        *wave(m,mw,i)*aux3(ilenrat,i)
    30          continue
    40       continue
 c
 c     # rotate momentum components:
       do 50 i=ix1,ixm1
-	 bpasdq2 = alf(i)*bpasdq(2,i) - beta(i)*bpasdq(3,i)
-	 bpasdq3 = beta(i)*bpasdq(2,i) + alf(i)*bpasdq(3,i)
-	 bpasdq(2,i) = bpasdq2
-	 bpasdq(3,i) = bpasdq3
+         bpasdq2 = alf(i)*bpasdq(2,i) - beta(i)*bpasdq(3,i)
+         bpasdq3 = beta(i)*bpasdq(2,i) + alf(i)*bpasdq(3,i)
+         bpasdq(2,i) = bpasdq2
+         bpasdq(3,i) = bpasdq3
    50    continue
 c
 c        --------------
@@ -181,16 +184,16 @@ c
 c
            alf(i) = aux2(inx,i1)
            beta(i) = aux2(iny,i1)
-	   pres = gamma1*(ql(4,i1)  - 0.5d0*(ql(2,i1)**2 +
+           pres = gamma1*(ql(4,i1)  - 0.5d0*(ql(2,i1)**2 +
      &            ql(3,i1)**2)/ql(1,i1))
            u(i) = (alf(i)*ql(2,i1) + beta(i)*ql(3,i1)) / ql(1,i1)
            v(i) = (-beta(i)*ql(2,i1) + alf(i)*ql(3,i1)) / ql(1,i1)
-	   enth(i) = (ql(4,i1)+pres) / ql(1,i1)
-	   u2v2(i) = u(i)**2 + v(i)**2
+           enth(i) = (ql(4,i1)+pres) / ql(1,i1)
+           u2v2(i) = u(i)**2 + v(i)**2
            a2 = gamma1*(enth(i) - .5d0*u2v2(i))
            a(i) = dsqrt(a2)
-	   g1a2(i) = gamma1 / a2
-	   euv(i) = enth(i) - u2v2(i) 
+           g1a2(i) = gamma1 / a2
+           euv(i) = enth(i) - u2v2(i) 
            enddo
 c
 c
@@ -238,19 +241,19 @@ c    --------------------------------
 c
       do 100 m=1,meqn
          do 100 i=ix1,ixm1
-	    bmasdq(m,i) = 0.d0
-	    do 90 mw=1,mwaves
-	       bmasdq(m,i) = bmasdq(m,i) + dmin1(s(mw,i), 0.d0)
+            bmasdq(m,i) = 0.d0
+            do 90 mw=1,mwaves
+               bmasdq(m,i) = bmasdq(m,i) + dmin1(s(mw,i), 0.d0)
      &                        *wave(m,mw,i)*aux2(ilenrat,i1)
    90          continue
   100       continue
 c
 c     # rotate momentum components:
       do 150 i=ix1,ixm1
-	 bmasdq2 = alf(i)*bmasdq(2,i) - beta(i)*bmasdq(3,i)
-	 bmasdq3 = beta(i)*bmasdq(2,i) + alf(i)*bmasdq(3,i)
-	 bmasdq(2,i) = bmasdq2
-	 bmasdq(3,i) = bmasdq3
+         bmasdq2 = alf(i)*bmasdq(2,i) - beta(i)*bmasdq(3,i)
+         bmasdq3 = beta(i)*bmasdq(2,i) + alf(i)*bmasdq(3,i)
+         bmasdq(2,i) = bmasdq2
+         bmasdq(3,i) = bmasdq3
   150    continue
 c
 c

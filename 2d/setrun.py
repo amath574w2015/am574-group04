@@ -60,8 +60,8 @@ def setrun(claw_pkg='classic'):
     clawdata.upper[1] = 1.    # yupper
     
     # Number of grid cells:
-    clawdata.num_cells[0] = 1000      # mx
-    clawdata.num_cells[1] = 200     # my
+    clawdata.num_cells[0] = 500      # mx
+    clawdata.num_cells[1] = 100     # my
     
 
     # ---------------
@@ -108,8 +108,8 @@ def setrun(claw_pkg='classic'):
     if clawdata.output_style==1:
         # Output ntimes frames at equally spaced times up to tfinal:
         # Can specify num_output_times = 0 for no output
-        clawdata.num_output_times = 50
-        clawdata.tfinal = 50
+        clawdata.num_output_times = 150
+        clawdata.tfinal = 100
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
     elif clawdata.output_style == 2:
@@ -152,7 +152,7 @@ def setrun(claw_pkg='classic'):
     
     # Initial time step for variable dt.  
     # (If dt_variable==0 then dt=dt_initial for all steps)
-    clawdata.dt_initial = 0.001
+    clawdata.dt_initial = 0.1
     
     # Max time step to be allowed if variable dt used:
     clawdata.dt_max = 1.e9
@@ -163,7 +163,7 @@ def setrun(claw_pkg='classic'):
     clawdata.cfl_max = 1.
     
     # Maximum number of time steps to allow between output times:
-    clawdata.steps_max = 50000
+    clawdata.steps_max = 5000
 
 
     # ------------------
@@ -171,13 +171,13 @@ def setrun(claw_pkg='classic'):
     # ------------------
 
     # Order of accuracy:  1 => Godunov,  2 => Lax-Wendroff plus limiters
-    clawdata.order = 1
+    clawdata.order = 2
     
     # Use dimensional splitting? (not yet available for AMR)
     # Godunov splitting = 1
     # Strang splitting = 2
 
-    clawdata.dimensional_split = 1 #'unsplit'
+    clawdata.dimensional_split = 'unsplit'
     
     # For unsplit method, transverse_waves can be 
     #  0 or 'none'      ==> donor cell (only normal solver used)
@@ -221,8 +221,8 @@ def setrun(claw_pkg='classic'):
     #   2 or 'periodic' => periodic (must specify this at both boundaries)
     #   3 or 'wall'     => solid wall for systems where q(2) is normal velocity
     
-    clawdata.bc_lower[0] = 1   # at xlower
-    clawdata.bc_upper[0] = 1   # at xupper
+    clawdata.bc_lower[0] = 0   # at xlower
+    clawdata.bc_upper[0] = 0   # at xupper
 
     clawdata.bc_lower[1] = 'wall'   # at ylower
     clawdata.bc_upper[1] = 'wall'   # at yupper

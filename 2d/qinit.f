@@ -11,12 +11,12 @@ c
       real(kind=8) :: at,gamma,gamma_m,gamma_a
       real(kind=8) :: area(1-mbc:mx+mbc)
       real(kind=8) :: c(1-mbc:mx+mbc)
-      real(kind=8) :: radius,rho,u
+      real(kind=8) :: radius,rho,u,pto
       real(kind=8) :: pi,patm,xc,yc,p
       real(kind=8) :: Mold,M,Ar,f,df,tol
       integer :: iter,i,j,k
 
-      common /cparam/ gamma, po,patm,rho_o     
+      common /cparam/ gamma, gamma1, pto, patm, rho_o     
 
       pi=4d0*atan(1d0)
       gamma_m = gamma - 1.d0
@@ -37,11 +37,12 @@ c
 
       do i=1,mx
         xc = xlower + (i-0.5d0)*dx
-        do j=1,my
+        do j=1-mbc,my+mbc
             yc = ylower + (j-0.5d0)*dy
             call mapc2p(xc,yc,xp,yp)
             Ar=area(i)/at
 !           Calculate Mach
+            
             if((area(i+1)-area(i)).le.0.d0) then
                M = 0.2d0
             else
@@ -69,13 +70,13 @@ c
             endif
 
             rho=rho_o*(1.d0+gamma_m/2.d0*M**2.d0)**(-1.d0/gamma_m)
-            p=po*(1.d0+gamma_m/2.d0*M**2.d0)**(-gamma/gamma_m)
+            p=pto*(1.d0+gamma_m/2.d0*M**2.d0)**(-gamma/gamma_m)
             c(i)=sqrt(p/rho*gamma)
             u=M*c(i)
 
             rho = rho_o
-            u = 0.1d0
-            p = po - (po - patm)/((mx-0.5d0)*dx)*xcell
+            u = 0.01d0
+            p = pto - (pto - patm)/((mx-0.5d0)*dx)*xc
 
 
 !           Now set the conserved variables

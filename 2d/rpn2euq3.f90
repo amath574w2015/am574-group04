@@ -52,7 +52,9 @@
       dimension q3l(-1:maxm2), q3r(-1:maxm2)
       dimension alf(-1:maxm2)
       dimension beta(-1:maxm2)
-      common /param/ gamma, gamma1
+      
+
+      common /cparam/ gamma, gamma1
 !
       data efix /.false./    !# use entropy fix for transonic rarefactions
 !     #### not yet working on curvilinear grid!
@@ -94,19 +96,20 @@
            if(alf(i)/=alf(i)) write(*,*) 'alf(',i,') is NaN'
            if(beta(i)/=beta(i)) write(*,*) 'beta(',i,') is NaN'
 
-!           if(ql(2,i)/=ql(2,i)) write(*,*) 'ql(2,',i,') is NaN= ',ql(2,i)
-!           if(qr(2,i)/=qr(2,i)) write(*,*) 'qr(2,',i,') is NaN= ',qr(2,i)
-!           if(ql(3,i)/=ql(3,i)) write(*,*) 'ql(3,',i,') is NaN= ',ql(3,i)
-!           if(qr(3,i)/=qr(3,i)) write(*,*) 'qr(3,',i,') is NaN= ',qr(3,i)
+           if(ql(2,i)/=ql(2,i)) write(*,*) 'ql(2,',i,') is NaN= ',ql(2,i)
+           if(qr(2,i)/=qr(2,i)) write(*,*) 'qr(2,',i,') is NaN= ',qr(2,i)
+           if(ql(3,i)/=ql(3,i)) write(*,*) 'ql(3,',i,') is NaN= ',ql(3,i)
+           if(qr(3,i)/=qr(3,i)) write(*,*) 'qr(3,',i,') is NaN= ',qr(3,i)
 
            q2l(i) = alf(i)*ql(2, i) + beta(i)*ql(3, i)
            q2r(i-1) = alf(i)*qr(2,i-1) + beta(i)*qr(3,i-1)
            q3l(i) = -beta(i)*ql(2,i) + alf(i)*ql(3,i)
            q3r(i-1) = -beta(i)*qr(2,i-1) + alf(i)*qr(3,i-1)
-!           if(q2l(i)/=q2l(i)) write(*,*) 'q2l(',i,') is Nan'
-!           if(q2r(i-1)/=q2r(i-1)) write(*,*) 'q2r(',i-1,') is Nan'
-!           if(q3l(i)/=q3l(i)) write(*,*) 'q3l(',i,') is Nan'
-!           if(q3r(i-1)/=q3r(i-1)) write(*,*) 'q3r(',i-1,') is Nan'    
+
+           if(q2l(i)/=q2l(i)) write(*,*) 'q2l(',i,') is Nan'
+           if(q2r(i-1)/=q2r(i-1)) write(*,*) 'q2r(',i-1,') is Nan'
+           if(q3l(i)/=q3l(i)) write(*,*) 'q3l(',i,') is Nan'
+           if(q3r(i-1)/=q3r(i-1)) write(*,*) 'q3r(',i-1,') is Nan'    
         enddo
 
 
@@ -117,16 +120,27 @@
              q3r(i-1)**2.d0)/qr(1,i-1))
          pr = gamma1*(ql(4,i) - 0.5d0*(q3l(i)**2.d0 +  &
              q3l(i)**2.d0)/ql(1,i))
+         if(pr/=pr) write(*,*) 'pr NaN'
+         if(pl/=pl) write(*,*) 'pl NaN'
          rhsq2 = rhsqrtl + rhsqrtr
+         if(rhsq2/=rhsq2) write(*,*) 'rho neg'
          u(i) = (q2l(i)/rhsqrtr + q2r(i-1)/rhsqrtl) / rhsq2
          v(i) = (q3l(i)/rhsqrtr + q3r(i-1)/rhsqrtl) / rhsq2
          enth(i) = (((qr(4,i-1)+pl)/rhsqrtl       &
                   + (ql(4,i)+pr)/rhsqrtr)) / rhsq2
          u2v2(i) = u(i)**2.d0 + v(i)**2.d0
          a2 = gamma1*(enth(i) - .5d0*u2v2(i))
+         if(a2 <= 0) then
+             write(*,*) 'a2 = ',a2,'gamma1 = ',gamma1
+             write(*,*) 'enth(i) = ',enth(i), 'u2v2 = ',u2v2(i)
+             write(*,*) 'u = ',u(i),'v = ',v(i)
+         endif
          a(i) = dsqrt(a2)
          g1a2(i) = gamma1 / a2
          euv(i) = enth(i) - u2v2(i) 
+
+         if(g1a2(i)/=g1a2(i)) write(*,*) 'g1a2 nan'
+         if(euv(i)/=euv(i)) write(*,*) 'euv NaN'
    10    continue
 !
 !
@@ -169,13 +183,13 @@
          s(3,i) = (u(i)+a(i)) 
 
 !	 Check for NaNs in waves
-!         do k = 1,4
-!            do j = 1,3
-!               if (wave(k,j,i)/=wave(k,j,i)) then
-!                  write(*,*) 'wave(',k,',',j,',',i,') is NaN'
-!               endif
-!            enddo
-!         enddo
+         do k = 1,4
+            do j = 1,3
+               if (wave(k,j,i)/=wave(k,j,i)) then
+                  write(*,*) 'wave(',k,',',j,',',i,') is NaN'
+               endif
+            enddo
+         enddo
 
    20    continue
 

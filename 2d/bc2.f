@@ -40,8 +40,8 @@ c     Local Variables
       real(kind=8) patm,uN,pN,cN,rhoN,eN1,e0
       real(kind=8) uN1,pN1,rhoN1,umagN0,umagN1
       real(kind=8) gamma_m,gamma_a,beta,theta
-
-      common /cparam/ gamma, po, patm
+      integer :: i,j,ibc
+      common /cparam/ gamma,gamma1, pto, patm,rho_o
       common /comic/ rhol,rhor,rhoul,rhour,el,er
 c
 c
@@ -57,7 +57,6 @@ c     in each ghost cell
       gamma_m = gamma - 1.d0
       gamma_a = gamma + 1.d0
       beta = gamma_a/gamma_m
-
       do 105 ibc=1,mbc
           do 105 j = 1-mbc,my+mbc
 !            Define variables in 1st interior cells
@@ -66,20 +65,21 @@ c     in each ghost cell
              v1 = q(3,1,j)/q(1,1,j)
              theta = tan(v1/u1)
              umag1 = sqrt(u1**2.0d0+v1**2.0d0)
-             p1 = gamma_m*(q(4,1,i)-0.5d0*rho1*(u1**2.0d0
+             p1 = gamma_m*(q(4,1,j)-0.5d0*rho1*(u1**2.0d0
      &             +v1**2.0d0))
              c1 = sqrt(gamma*p1/rho1)
            
 !            U positive, three right going waves
              if(u1.gt.0.0d0) then
-                p0 = po
+                p0 = pto
                 umag0 = umag1-2.d0/sqrt(2.d0*gamma*gamma_m)
      &          *c1*(1.d0-p0/p1)/sqrt(1.d0+beta*p0/p1)
-                u0 = umag0*cos(theta)
-                v0 = umag0*sin(theta)
+                u0 = umag0 !*cos(theta)
+                v0 = 0.0d0 !umag0*sin(theta)
                 rho0  = (1.d0+beta*p0/p1)/(p0/p1+beta)*rho1
                 e0 = p0/gamma_m+0.5d0*rho0*(u0**2.d0 + v0**2.d0)
 
+!                write(*,*) 'p1 = ',p1,'p0 = ',p0,'po = ',po
                 q(1,1-ibc,j) = rho0
                 q(2,1-ibc,j) = rho0*u0
                 q(3,1-ibc,j) = rho0*v0
@@ -141,8 +141,53 @@ c-------------------------------------------------------
 c
   200 continue
 c     # user-specified boundary conditions go here in place of error output
-      write(6,*) '*** ERROR *** mthbc(2)=0 and no BCs specified in bc2'
-      stop
+
+      gamma_m = gamma - 1.d0
+      gamma_a = gamma + 1.d0
+      beta = gamma_a/gamma_m
+
+      do 205 ibc=1,mbc
+          do 205 j = 1-mbc,my+mbc
+!            Define variables in 1st interior cells
+             rhoN = q(1,mx,j)
+             uN = q(2,mx,j)/q(1,mx,j)
+             vN = q(3,mx,j)/q(1,mx,j)
+             theta = tan(vN/uN)
+             umagN = sqrt(uN**2.0d0+vN**2.0d0)
+             pN = gamma_m*(q(4,mx,j)-0.5d0*rhoN*(uN**2.0d0
+     &             +vN**2.0d0))
+             cN = sqrt(gamma*pN/rhoN)
+
+!            U positive, three right going waves
+             if(u1.gt.0.0d0) then
+                rhoN1 = (1.d0 + beta*patm/pN)/(patm/pN+beta)*rhoN
+                umagN1 = umagN+2.d0/sqrt(2.d0*gamma*gamma_m)
+     &          *cN*(1.d0-patm/pN)/sqrt(1.d0+beta*patm/pN)
+                uN1 = umagN1
+                vN1 = 0.0d0 
+                eN1 = patm/gamma_m+0.5d0*rhoN1*(uN1**2.d0 + vN1**2.d0)
+
+                q(1,mx+ibc,j) = rhoN1
+                q(2,mx+ibc,j) = rhoN1*uN1
+                q(3,mx+ibc,j) = rhoN1*vN1
+                q(4,mx+ibc,j) = eN1
+!            U is negative, one right going wave
+             else
+                rhoN1 = (1.d0+beta*patm/pN)/(patm/pN+beta)*
+     &              rhoN
+                umagN1 = umagN+2.d0/sqrt(2.d0*gamma*
+     &              gamma_m)*cN*(1.d0-patm/pN)
+     &              /sqrt(1.d0+beta*patm/pN)
+                uN1 = umagN1
+                vN1 = 0.d0
+                eN1 = patm/gamma_m+0.5d0*uN1**2.d0*rhoN1
+
+                q(1,mx+ibc,j) = rhoN1
+                q(2,mx+ibc,j) = rhoN1*uN1
+                q(3,mx+ibc,j) = rhoN1*vN1
+                q(3,mx+ibc,j) = eN1
+              endif
+  205    continue
       go to 299
 
   210 continue
@@ -210,10 +255,9 @@ c     # periodic:
 
   330 continue
 c     # solid wall (assumes 3'rd component is velocity or momentum in y):
-
-      do 335 jbc=1,mbc
-         do 335 i = 1-mbc, mx+mbc
-             do 335 m=1,meqn
+      do 335 m=1,meqn
+         do 335 jbc=1,mbc
+             do 335 i = 1-mbc, mx+mbc            
                q(m,i,1-jbc) = q(m,i,jbc)
   335       continue
 
@@ -222,14 +266,13 @@ c     # (for a general quadrilateral grid)
 c
       do 336 jbc=1,mbc
          do 336 i = 1-mbc, mx+mbc
-            do 336 m=1,meqn
-                alf = aux(4,i,1)
-                beta = aux(5,i,1)
-                unorm = alf*q(2,i,jbc) + beta*q(3,i,jbc)
-                utang = -beta*q(2,i,jbc) + alf*q(3,i,jbc)
-                unorm = -unorm
-                q(2,i,1-jbc) = alf*unorm - beta*utang
-                q(3,i,1-jbc) = beta*unorm + alf*utang 
+             alf = aux(4,i,1)
+             beta = aux(5,i,1)
+             unorm = alf*q(2,i,jbc) + beta*q(3,i,jbc)
+             utang = -beta*q(2,i,jbc) + alf*q(3,i,jbc)
+             unorm = -unorm
+             q(2,i,1-jbc) = alf*unorm - beta*utang
+             q(3,i,1-jbc) = beta*unorm + alf*utang 
   336       continue
 
       go to 399
@@ -267,9 +310,9 @@ c     # periodic:
 
   430 continue
 c     # solid wall (assumes 3'rd component is velocity or momentum in y):
-      do 435 jbc=1,mbc
-         do 435 i = 1-mbc, mx+mbc
-            do 435 m=1,meqn
+      do 435 m=1,meqn
+         do 435 jbc=1,mbc
+            do 435 i = 1-mbc, mx+mbc
                q(m,i,my+jbc) = q(m,i,my+1-jbc)
   435       continue
 c     # negate the normal velocity:
@@ -282,8 +325,8 @@ c
             unorm = alf*q(2,i,my+1-jbc) + beta*q(3,i,my+1-jbc)
             utang = -beta*q(2,i,my+1-jbc) + alf*q(3,i,my+1-jbc)
             unorm = -unorm
-            q(2,i,1-jbc) = alf*unorm - beta*utang
-            q(3,i,1-jbc) = beta*unorm + alf*utang
+            q(2,i,my+jbc) = alf*unorm - beta*utang
+            q(3,i,my+jbc) = beta*unorm + alf*utang
   436    continue
       go to 499
 
